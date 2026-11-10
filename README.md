@@ -120,6 +120,7 @@ Chaque agent est régi par un fichier Markdown dans `agents/` structuré selon l
 - **Agent 09 — Rédacteur Technique** : Rédige le mémoire académique en LaTeX, les guides d'exploitation et documente le journal de transparence IA.
 - **Agent 10 — Release & CI/CD** : Gère le versionnage sémantique, les notes de version et les workflows GitHub Actions.
 - **Agent 11 — Modélisation** : Génère et vérifie l'alignement des diagrammes PlantUML avec le code réel via `gen_diagrams.py`.
+- **Agent 12 — Memoire Guardian AI** : Audite intégralement le mémoire académique en 7 phases (fond, méthode, sources, syntaxe, mise en page, éthique IA, soutenance) et calcule le score sur 100 points via `./orchestrator.sh guardian`.
 
 ---
 

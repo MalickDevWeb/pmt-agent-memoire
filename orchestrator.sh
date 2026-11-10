@@ -379,6 +379,7 @@ show_help() {
     echo -e "  ${CYAN}./orchestrator.sh kasongo <NN>${NC}     -> Kasongo (00) : rapport complet de supervision + DoD (--ticket, --base, --out)"
     echo -e "  ${CYAN}./orchestrator.sh handover <NN>${NC}    -> Kasongo (00) : contrôle la livraison d'un agent (--ticket, --base, --only)"
     echo -e "  ${CYAN}./orchestrator.sh diagrams${NC}         -> Diagrammes BD / classes générés depuis le code (--check, --render)"
+    echo -e "  ${CYAN}./orchestrator.sh guardian${NC}         -> Memoire Guardian AI : audit académique, détection IA, soutenance et livrables"
     echo -e "  ${CYAN}./orchestrator.sh check-agents${NC}     -> Vérifie que le code respecte les règles vérifiables des fiches"
     echo -e "  ${CYAN}./orchestrator.sh backfill-memberships${NC} -> SEC-003 : reprise des appartenances (simulation ; --apply pour écrire)"
     echo -e "  ${CYAN}./orchestrator.sh evidence${NC}         -> Preuves machine datées pour les agents 06/07 (docs/evidence/)"
@@ -515,6 +516,11 @@ case "$1" in
         # Diagrammes « tel que construit » (Agent 11) : --check (écart avec le code), --render (PNG)
         shift
         python3 "$ROOT_DIR/audit/gen_diagrams.py" "$@"
+        ;;
+    guardian)
+        # Memoire Guardian AI (Agent 12) : audit académique en 7 phases, score /100, soutenance, checklist
+        shift
+        python3 "$ROOT_DIR/audit/memoire_guardian.py" "$@"
         ;;
     check-agents)
         python3 "$ROOT_DIR/audit/check_agent_rules.py"
