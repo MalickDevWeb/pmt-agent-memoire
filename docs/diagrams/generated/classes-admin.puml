@@ -1,0 +1,55 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module admin (tel que construit)
+skinparam classAttributeIconSize 0
+class Classe {
+  id : String
+  name : String
+  filiereId : String
+  + updateName()
+}
+class ClasseFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Filiere {
+  id : String
+  code : String
+  name : String
+  + updateCode()
+  + updateName()
+}
+class FiliereFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Room {
+  id : String
+  name : String
+  capacity : int
+  + canAccommodate()
+  + updateName()
+}
+class RoomFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class TimeSlot {
+  id : String
+  day : String
+  heureDebut : String
+  heureFin : String
+  nom : String
+  type : String
+  professeur : String
+  salle : String
+  description : String
+  classeId : String
+  + updateDescription()
+  + updateNom()
+}
+class TimeSlotFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

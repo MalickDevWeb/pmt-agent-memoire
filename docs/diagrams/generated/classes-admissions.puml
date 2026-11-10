@@ -1,0 +1,24 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module admissions (tel que construit)
+skinparam classAttributeIconSize 0
+class Candidate {
+  id : String
+  nom : String
+  prenom : String
+  email : String
+  telephone : String
+  statut : CandidateStatus
+  note : Double
+  filiereDemandee : String
+  + accept()
+  + finalizeStatus()
+  + hasPassed()
+  + markAsInProgress()
+  + reject()
+}
+class CandidateFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

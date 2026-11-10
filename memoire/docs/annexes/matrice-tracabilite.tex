@@ -1,0 +1,19 @@
+\chapter{Matrice de traçabilité des exigences}
+% Modèle du canevas E221, section 7. Une ligne par exigence (US-xx, BR-xx) du chapitre 2.
+% Exigence -> composant -> test -> preuve -> statut. Une exigence sans test est marquée « non testée ».
+% Sources : docs/requirements.md, docs/requirements/FEAT-*.md, docs/test-report.md, docs/evidence/.
+% Pour une matrice longue, passer au paquet longtable.
+% NB : les cellules commençant par « [ » sont entourées d'accolades (sinon \midrule lit un argument optionnel).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Matrice de traçabilité des exigences (modèle)}
+  \label{tab:matrice-tracabilite}
+  \begin{tabular}{@{}p{0.30\linewidth}p{0.30\linewidth}p{0.32\linewidth}@{}}
+    \toprule
+    \textbf{Exigence} & \textbf{Réalisation associée} & \textbf{Test et résultat} \\
+    \midrule
+    {[Identifiant et critère mesurable]} & {[Composant, fonctionnalité ou configuration]} & {[Identifiant du test, preuve, statut et limite]} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

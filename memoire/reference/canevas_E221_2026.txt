@@ -1,0 +1,390 @@
+Canevas du mémoire Licence Professionnelle E221
+Conditions d’accès à la soutenance
+Pour être autorisé à soutenir, chaque étudiant doit remplir les deux conditions suivantes :
+●​ Avoir validé la totalité des crédits de la troisième année de licence L3.
+●​ Avoir validé la totalité des crédits de la première et de la deuxième année de licence L1 et L2.
+Ces deux conditions sont cumulatives et s’appliquent individuellement à chaque étudiant.
+
+Finalité du travail
+Le mémoire démontre la capacité de l’étudiant à formuler un problème, mobiliser des connaissances,
+concevoir une solution informatique et en évaluer les résultats. Il doit rendre visibles la démarche suivie,
+les choix justifiés, les contributions personnelles et les limites du projet.
+Ce canevas concerne les parcours Génie logiciel, Réseaux et systèmes et Conception et développement de
+solutions digitales. Les modèles et livrables techniques sont adaptés au sujet avec l’encadreur, tout en
+conservant une démarche vérifiable.
+
+Calendrier des rendus
+
+Échéance                      Livrable attendu
+
+27 novembre 2026              Dépôt du mémoire pour prélecture. Version complète permettant des retours sur le
+                              fond, la méthode et la forme.
+
+11 décembre 2026              Dépôt final du mémoire corrigé, avec les annexes et la déclaration relative à l’usage
+                              de l’IA.
+
+Du 16 au 28 décembre          Période des soutenances. La date, l’heure et les modalités individuelles sont
+2026                          communiquées par l’établissement.
+
+Entre la prélecture et le dépôt final, consigner les remarques reçues, les corrections effectuées et les
+points restant à discuter avec l’encadreur.
+
+Statut et modalités à confirmer
+Les dates ci-dessus reprennent les échéances communiquées. Le cadre d’utilisation de l’intelligence
+artificielle présenté dans ce guide est validé par l’équipe pédagogique. Il s’applique à la préparation du
+mémoire, au prototype et à la soutenance. Les autres recommandations de présentation restent à préciser
+selon les consignes de l’établissement.
+
+  À préciser avant diffusion : canal et heure limite de dépôt, formats demandés, volume du mémoire,
+  norme bibliographique, durée de l’oral et modalités de remise du prototype.
+
+Canevas du mémoire de fin de formation E221​                                                                  Page 1 sur 10
+1. Composition et présentation du mémoire
+
+Ordre des éléments préliminaires
+●​ Page de garde : université et école, spécialisation, titre du projet, noms et prénoms des étudiants,
+   encadreur, année académique et logo de l’établissement. Le logo du projet peut être ajouté.
+●​ Remerciements : personnes ayant contribué au travail, sur une page au maximum.
+●​ Dédicace : texte personnel et sobre, sur une page au maximum.
+●​ Préambule : établissement et contexte pédagogique du projet, sur une page au maximum.
+●​ Listes des tableaux et des figures : numéro, titre et page de chaque élément. Sigles et abréviations :
+   classement alphabétique.
+●​ Résumé en français : contexte, problème, objectif, méthode, principaux résultats et limites, sur une
+   page au maximum, suivi de cinq mots clés.
+●​ Abstract : version anglaise fidèle du résumé, suivie de cinq keywords.
+●​ Sommaire : vue synthétique du plan et des pages, générée à partir des styles de titres.
+
+Corps du mémoire et éléments de fin
+Introduction générale ; trois parties et huit chapitres détaillés dans les pages suivantes ; conclusion
+générale ; table des matières détaillée ; bibliographie ; webographie si elle est conservée séparément ;
+annexes numérotées et titrées. Éviter les doublons entre bibliographie et webographie.
+
+Règles de présentation proposées
+Utiliser une police lisible de 11 ou 12 points, un interligne de 1,15 à 1,5 et des marges de 2 à 2,5 cm.
+Appliquer une numérotation cohérente des titres et des pages. Employer les styles Word pour générer les
+tables et listes automatiques, puis les actualiser avant chaque dépôt.
+Chaque tableau, figure ou capture doit être numéroté, titré, lisible et commenté dans le texte. Indiquer sa
+source ou préciser qu’il s’agit d’une réalisation personnelle. Masquer les données sensibles dans les
+captures. Les diagrammes doivent être exportés avec une résolution suffisante.
+
+Citations et références
+Choisir avec l’encadreur un style bibliographique unique et l’appliquer à tout le document. Citer la source
+des idées, données, illustrations et extraits de code repris. Distinguer les citations exactes, placées entre
+guillemets, des reformulations, qui nécessitent aussi une référence. Ne référencer que des documents
+effectivement consultés et vérifiés.
+
+Canevas du mémoire de fin de formation E221​                                                     Page 2 sur 10
+2. Cadrage du projet et méthode
+
+Introduction générale
+Présenter le contexte, l’intérêt du sujet et le problème observé. Formuler une question centrale précise,
+un objectif général et des objectifs spécifiques évaluables. Délimiter le périmètre, annoncer la démarche
+et présenter le plan. Distinguer les résultats attendus des résultats effectivement obtenus.
+
+Partie 1 — Cadre organisationnel et analyse des besoins
+Chapitre 1 — Cadre du projet et contexte d’étude
+Section 1 — Cadre du projet : présenter l’organisation ou l’environnement concerné, les acteurs, la
+mission du groupe, les bénéficiaires et les contraintes. Décrire les responsabilités de chaque membre.
+Section 2 — Contexte d’étude : décrire les pratiques existantes, leurs limites et les enjeux métier.
+Comparer les solutions ou travaux pertinents, avec des sources vérifiées, pour situer l’apport du projet.
+
+  Éléments attendus : présentation de l’existant, périmètre du projet et justification du problème à
+  résoudre.
+
+Chapitre 2 — Analyse des besoins et spécifications
+Expliquer comment les besoins ont été recueillis : entretiens, observations, questionnaires, analyse
+documentaire ou expérimentation. Préciser les participants, les conditions de collecte et les limites, sans
+exposer d’informations personnelles inutiles.
+Identifier les utilisateurs et les cas d’usage. Définir les exigences fonctionnelles et non fonctionnelles :
+sécurité, performance, disponibilité, fiabilité, ergonomie et accessibilité selon le projet. Attribuer à chaque
+exigence un identifiant, une priorité et un critère d’acceptation mesurable.
+
+  Éléments attendus : synthèse du recueil des besoins, spécifications et périmètre retenu pour le
+  prototype. Relier les exigences aux futurs tests.
+
+Partie 2 — Pilotage et conception de la solution
+Chapitre 3 — Gestion du projet et choix méthodologique
+Comparer les démarches pertinentes et justifier celle retenue. Distinguer le mode de gestion du projet de
+la méthode de collecte et d’analyse des données. Présenter les rôles, les tâches, la planification, les outils
+de suivi et la gestion des versions.
+
+  Éléments attendus : planning prévu et réalisé, répartition des contributions, risques et mesures de
+  réduction, jalons et écarts expliqués. Documenter les validations avec l’encadreur.
+
+Canevas du mémoire de fin de formation E221​                                                       Page 3 sur 10
+3. Conception et estimation des coûts
+
+Chapitre 4 — Conception fonctionnelle et technique du système
+Décrire la solution proposée avant sa réalisation et montrer comment elle répond aux exigences. Présenter
+les choix possibles, les critères de comparaison et les raisons des choix retenus.
+●​ Conception fonctionnelle : parcours utilisateurs, cas d’utilisation, règles métier, maquettes et
+   scénarios essentiels.
+●​ Modélisation : diagramme de contexte, cas d’utilisation, classes , séquences des scénarios importants.
+   Retenir les diagrammes utiles et expliquer les adaptations au parcours.
+●​ Architecture : composants, interfaces, flux, stockage, environnements et dépendances.
+●​ Sécurité et exploitation : authentification, autorisations, protection des données, journalisation,
+   sauvegardes et restauration. Présenter les principaux risques et les mesures prévues.
+●​ Choix techniques : langages, frameworks, équipements et services, avec versions pertinentes,
+   contraintes, limites et alternatives étudiées.
+
+  Éléments attendus : diagrammes lisibles et commentés, architecture justifiée et correspondance entre
+  exigences et composants.
+
+Chapitre 5 — Coût du projet
+Présenter les hypothèses de chiffrage, la monnaie et la date de l’estimation. Distinguer dépenses
+ponctuelles, coûts récurrents, charges estimées et dépenses effectivement engagées. Préciser la période
+couverte et éviter le double comptage.
+
+Poste                            Base du calcul à renseigner
+
+Ressources humaines              Rôle, charge en jours et coût journalier, si valorisation retenue.
+
+Matériel et logiciels            Quantités, prix unitaires, licences et conditions de gratuité éventuelles.
+
+Hébergement et services          Abonnements, durée, stockage, domaine et consommation d’API, dont IA si
+                                 utilisée.
+
+Maintenance et aléas             Hypothèses, période couverte et provision justifiée.
+
+  Éléments attendus : tableau avec quantité, unité, coût unitaire, sous-total, source du prix et total.
+  Présenter séparément le coût initial et le coût de fonctionnement sur la période choisie.
+
+Canevas du mémoire de fin de formation E221​                                                                  Page 4 sur 10
+4. Réalisation et validation de la solution
+
+Partie 3 — Mise en œuvre
+Chapitre 6 — Réalisation et développement
+Présenter l’environnement de travail et les versions utiles, l’organisation du dépôt Git, les composants
+développés et leurs interactions. Illustrer les fonctionnalités importantes par des captures ou de courts
+extraits de code expliqués.
+Décrire la validation des entrées, la gestion des erreurs, les rôles et permissions ainsi que la protection des
+secrets. Expliquer les difficultés rencontrées et les solutions apportées. Distinguer les réalisations
+personnelles, les composants tiers et les éléments assistés par IA.
+
+  Éléments attendus : dépôt organisé, historique des contributions, fonctionnalités réalisées et limites
+  connues. Placer le code volumineux en dépôt ou en annexe plutôt que dans le corps du mémoire.
+
+Chapitre 7 — Tests et validation du système
+Construire un plan de tests à partir des exigences. Pour chaque cas, indiquer l’identifiant de l’exigence, les
+préconditions, les étapes, le résultat attendu, le résultat observé, le statut et la preuve. Documenter les
+anomalies, leurs corrections et les nouveaux tests effectués.
+Couvrir, selon le projet, les tests unitaires, d’intégration, fonctionnels, de sécurité, de performance,
+d’ergonomie et de restauration. Préciser l’environnement, les données utilisées et les conditions des
+mesures. Comparer les résultats aux objectifs sans présenter un test non exécuté comme réussi.
+
+  Éléments attendus : tableau de tests, preuves datées, résultats mesurés, bilan de conformité et limites
+  de validation. Une capture isolée ne suffit pas à démontrer une performance ou une sécurité globale.
+
+Chapitre 8 — Déploiement CI/CD et cloud
+Présenter une démarche de mise en service reproductible, depuis le dépôt du code jusqu’à l’exploitation
+de la solution. Distinguer les opérations réellement exécutées de l’architecture cible et des
+automatisations seulement proposées. Adapter les éléments ci-dessous au périmètre du projet et justifier
+les choix avec l’encadreur.
+
+8.1 Architecture et infrastructure cloud
+Présenter le fournisseur ou la plateforme retenue et justifier le modèle de service : machines virtuelles,
+plateforme managée, conteneurs ou fonctions à la demande. Comparer les options selon les besoins, les
+compétences, la disponibilité et le budget. Fournir un schéma des composants, des flux et des
+dépendances : application, base de données, stockage et services externes.
+Décrire les environnements de développement, de préproduction et de production, leur isolation et leur
+configuration. Préciser réseau, règles de filtrage, domaine, DNS, HTTPS et gestion des accès. Expliquer le
+provisionnement et, si elle est utilisée, l’infrastructure décrite par du code versionné. Documenter les
+ressources, la région choisie, les coûts estimés et les alertes budgétaires.
+
+8.2 Intégration et livraison continues
+Expliquer la distinction entre intégration continue, livraison continue avec validation avant mise en
+production et déploiement continu automatisé. Indiquer le mode retenu, les événements déclencheurs,
+les branches concernées, les responsabilités et les conditions de passage en production.
+
+Canevas du mémoire de fin de formation E221​                                                       Page 5 sur 10
+Décrire le pipeline CI/CD : récupération du code, installation des dépendances, contrôles de qualité et de
+sécurité, tests automatisés, compilation ou construction de l’image, publication d’un artefact versionné,
+déploiement en préproduction, tests de bon fonctionnement, puis promotion en production selon la règle
+de validation retenue. Préciser les critères bloquant une livraison et le traitement des échecs.
+Documenter le fichier de pipeline, les agents d’exécution, le registre des artefacts et les variables de
+configuration. Conserver les secrets dans un dispositif adapté, limiter les permissions et ne pas les inclure
+dans le dépôt ou les journaux. Assurer la traçabilité entre commit, artefact, exécution du pipeline et
+version déployée ; promouvoir si possible le même artefact entre environnements.
+
+8.3 Mise en production et exploitation
+Décrire la procédure de déploiement, les migrations de données, les vérifications après mise en service et
+la stratégie de retour arrière. Préciser comment revenir à une version compatible avec la base de données.
+Présenter les contrôles de santé, journaux, métriques, alertes, sauvegardes et tests de restauration, avec
+les responsabilités et limites de disponibilité.
+
+8.4 Éléments attendus pour le déploiement
+Fournir le schéma cloud, le guide de déploiement, la configuration du pipeline expurgée des secrets, la
+preuve d’une exécution avec son statut, l’identifiant de la version déployée, les résultats des tests après
+déploiement et la procédure de retour arrière. Ajouter le chiffrage cloud au chapitre 5. Une démonstration
+locale ou simulée doit être clairement signalée ; ne pas présenter un déploiement prévu comme réalisé.
+
+8.5 Mise en place d’un pipeline agentique
+Présenter un pipeline agentique, c’est-à-dire un enchaînement de tâches dans lequel un ou plusieurs
+agents d’IA utilisent des outils pour atteindre un objectif défini. Préciser son rôle dans le projet : analyse,
+assistance au développement, revue, préparation de tests ou aide au diagnostic. Distinguer cette
+orchestration du pipeline CI/CD qui construit, teste et livre les versions de la solution.
+
+Objectif et architecture du pipeline
+Définir le cas d’usage, les entrées, les sorties attendues et les critères de réussite. Présenter les étapes, les
+rôles des agents, les outils accessibles, le modèle utilisé et les règles d’orchestration. Un agent unique peut
+suffire ; justifier tout recours à plusieurs agents. Identifier les données consultées, leur provenance et les
+informations conservées entre les étapes.
+Fournir un schéma du flux retenu. Exemple à adapter : demande cadrée, plan de travail, exécution des
+tâches autorisées, contrôles automatisés, revue humaine, puis remise du résultat ou proposition de
+modification. Décrire les conditions de passage entre étapes, de reprise après échec et d’arrêt.
+
+Mise en œuvre et articulation avec la CI/CD
+Versionner les instructions, la configuration des agents et le code d’orchestration. Documenter les
+dépendances et les paramètres nécessaires à la reproduction. Si un agent propose une modification de
+code, la soumettre à une revue et aux contrôles CI avant toute promotion ; distinguer la proposition de
+l’agent de la décision de livraison.
+Limiter les permissions des outils au besoin de chaque tâche et isoler l’exécution dans un environnement
+de test. Exiger une validation humaine avant toute mise en production, suppression de données ou
+modification sensible. Prévoir des limites de durée, de nombre d’actions et de coût, ainsi qu’un mécanisme
+d’interruption et une solution de repli manuelle.
+
+Canevas du mémoire de fin de formation E221​                                                         Page 6 sur 10
+Données et contrôle des actions
+Appliquer le cadre d’usage de l’IA validé par l’équipe pédagogique. Ne pas exposer de secrets ou de
+données confidentielles dans les instructions, les outils ou les traces. Traiter les contenus récupérés dans
+des documents, dépôts ou pages web comme des données à analyser : ils ne doivent pas modifier les
+autorisations ou les consignes de l’agent. Contrôler les appels d’outils et les sorties avant réutilisation.
+
+Évaluation et preuves attendues
+Tester le pipeline sur des cas représentatifs, des entrées erronées, des outils indisponibles et des tentatives
+de détournement des instructions. Mesurer la qualité des résultats, le taux de réussite, les erreurs, les
+interventions humaines, la durée et le coût. Comparer, lorsque pertinent, à une exécution manuelle ou
+sans agent. Répéter les cas essentiels pour apprécier la variabilité des réponses.
+Fournir le schéma d’orchestration, les instructions et configurations expurgées des secrets, une trace
+d’exécution, les validations humaines, les résultats des tests et les limites observées. Indiquer clairement si
+le pipeline est opérationnel, partiellement réalisé ou seulement conçu. Consigner les usages et contrôles
+dans le journal d’IA en annexe ; intégrer les coûts au chapitre 5.
+
+Conclusion générale
+Répondre à la problématique en s’appuyant sur les résultats. Présenter les objectifs atteints, les écarts, les
+limites et les perspectives réalistes. Expliquer les acquis techniques et méthodologiques de chaque sans
+introduire de nouveaux résultats non démontrés.
+
+Canevas du mémoire de fin de formation E221​                                                       Page 7 sur 10
+5. Précautions pour l’usage de l’intelligence artificielle
+Cadre validé par l’équipe pédagogique. L’étudiant reste responsable de l’exactitude, de l’originalité et de la
+compréhension de tout élément remis, y compris lorsqu’un outil d’IA a contribué à sa préparation. Les
+consignes de l’établissement et de l’encadreur déterminent les usages autorisés.
+
+Usages envisageables sous conditions
+L’IA peut aider à explorer des pistes, comprendre un concept, améliorer la langue, traduire un résumé ou
+proposer du code et des tests. Chaque proposition doit être examinée, adaptée et vérifiée. Les décisions,
+analyses et conclusions doivent être défendues par les étudiants à partir de leurs propres travaux et de
+sources consultées.
+
+Vérifier les contenus et les références
+●​ Contrôler les faits, calculs, traductions et affirmations techniques. Ouvrir les sources originales et
+   vérifier auteur, titre, date et contenu avant de les citer. Une réponse d’IA ne remplace pas une preuve
+   documentaire.
+●​ Ne pas inventer de références, d’entretiens, de données, de captures, de résultats ou de tests. Signaler
+   les données simulées et expliquer leur usage et leurs limites.
+●​ Relire et tester tout code ou script proposé par IA. Vérifier les dépendances, la sécurité et les
+   conditions de réutilisation avant intégration. Ne pas exécuter un script incompris sur un système réel.
+
+Protéger les données et respecter les contributions
+Ne pas transmettre à un outil d’IA des données personnelles, des documents confidentiels, du code privé
+ou des secrets sans autorisation et sans cadre adapté. Utiliser de préférence des données fictives ou des
+extraits anonymisés, en contrôlant aussi les métadonnées et les captures. Vérifier les paramètres de
+conservation et de partage de l’outil utilisé.
+Citer les sources des contenus repris ou reformulés et respecter leurs conditions de réutilisation. Ne pas
+présenter une production de l’IA comme une enquête, une observation de terrain ou une contribution
+personnelle non assistée.
+
+Déclarer et conserver une trace des usages
+Ajouter une déclaration d’usage de l’IA et un journal synthétique en annexe : outil, version si connue, date,
+objectif, éléments concernés et contrôles effectués. Conserver les échanges utiles sous une forme
+expurgée des données sensibles. Si le projet intègre lui-même une IA, décrire aussi le modèle, l’évaluation,
+les erreurs observées et les mesures de contrôle humain.
+Chaque membre doit pouvoir expliquer les choix, le code et les résultats présentés. Un indicateur de
+détection d’IA ne doit pas, à lui seul, être considéré comme une preuve d’usage interdit ; l’examen doit
+porter sur les travaux, les traces et les explications.
+
+Canevas du mémoire de fin de formation E221​                                                      Page 8 sur 10
+6. Prototype et présentation orale
+
+Prototype
+Le prototype doit démontrer les fonctions essentielles annoncées dans le mémoire. Le périmètre livré doit
+être explicite : fonctions opérationnelles, simulations, dépendances externes, fonctionnalités inachevées
+et limites connues.
+●​ Fournir le code ou les configurations nécessaires, les versions des dépendances et un guide
+   d’installation ou de démarrage reproductible.
+●​ Préparer un jeu de données fictives ou anonymisées et des comptes de démonstration sans réutiliser
+   de secrets réels.
+●​ Joindre les principaux résultats de tests et un scénario de démonstration relié aux besoins des
+   utilisateurs.
+●​ Prévoir une solution de secours pour la soutenance, par exemple une démonstration locale ou une
+   vidéo, selon les modalités acceptées par l’établissement.
+
+Présentation orale
+Déroulement de la soutenance
+La soutenance se déroule devant un jury de professionnels du secteur informatique. Elle doit montrer la
+compréhension du problème, la cohérence de la solution, la maîtrise technique et la contribution de
+chaque membre.
+Structurer la présentation autour du contexte et de la problématique, des objectifs, de la démarche, des
+choix d’architecture, de la démonstration, des tests, du coût, des limites et des perspectives. Adapter le
+nombre de diapositives à la durée fixée par l’établissement.
+Justifier les décisions logicielles, réseau, sécurité, exploitation et budget selon le sujet. Répartir les
+interventions entre les membres et préparer les réponses sur leurs contributions et sur l’usage de l’IA.
+Présenter des résultats observés et distinguer les améliorations envisagées.
+
+Vérifications avant chaque rendu
+●​ Prélecture du 27 novembre : mémoire complet, plan cohérent, problématique explicite, résultats
+   présentés et questions à l’encadreur identifiées.
+●​ Dépôt final du 11 décembre : corrections intégrées, orthographe relue, références vérifiées, tables et
+   pagination actualisées, annexes et déclaration IA jointes.
+●​ Soutenance du 16 au 28 décembre : support relu, démonstration testée, temps de parole répété et
+   solution de secours disponible.
+
+Critères de qualité proposés
+Pertinence du problème ; rigueur de la méthode ; cohérence entre besoins, conception et tests ; qualité de
+la réalisation ; justification des coûts ; prise en compte de la sécurité ; traçabilité des contributions et des
+usages de l’IA ; clarté du mémoire et de l’oral. Aucune pondération n’est fixée ici.
+
+Canevas du mémoire de fin de formation E221​                                                        Page 9 sur 10
+7. Modèles de traçabilité à placer en annexe
+
+Déclaration relative à l’usage de l’IA
+Projet : [titre]
+Étudiant ou groupe : [noms]
+Nous déclarons avoir utilisé les outils suivants : [outils, versions si connues et dates], pour [finalités]. Les
+parties concernées sont [chapitres, paragraphes, code, figures ou traductions]. Nous avons effectué les
+vérifications suivantes : [sources consultées, relecture, calculs et tests]. Les limites constatées sont [limites
+et corrections].
+Nous assumons la responsabilité du contenu remis et pouvons expliquer les méthodes, choix et résultats
+présentés. Les usages ont été réalisés dans le respect des consignes applicables de l’établissement et de
+l’encadreur.
+En cas d’absence d’usage : « Nous déclarons n’avoir utilisé aucun outil d’IA générative pour la préparation
+de ce travail. » Retenir uniquement la formulation correspondant à la situation réelle.
+Date : [date]
+Noms et signatures : [à compléter]
+
+Journal synthétique des usages de l’IA
+Date et outil          Usage et élément concerné                           Vérification et décision
+
+[À renseigner]         [Objectif, chapitre ou fichier, résumé de la        [Source ou test, résultat du contrôle,
+                       demande]                                            modification ou rejet]
+
+Dupliquer la ligne pour chaque usage significatif. Ne conserver dans cette annexe aucune donnée
+confidentielle ni aucun secret.
+
+Matrice de traçabilité des exigences
+Exigence                             Réalisation associée                       Test et résultat
+
+[Identifiant et critère mesurable]   [Composant, fonctionnalité ou              [Identifiant du test, preuve, statut et
+                                     configuration]                             limite]
+
+Suivi des retours de prélecture
+Retour reçu                           Correction apportée                            Emplacement et statut
+
+[Remarque et date]                    [Action réalisée ou justification]             [Chapitre ou page, traité ou à
+                                                                                     discuter]
+
+Les annexes du mémoire sont numérotées, titrées et appelées dans le texte. Ajouter selon le projet les
+outils de collecte, les diagrammes détaillés, les preuves de tests et les guides utiles.
+
+Canevas du mémoire de fin de formation E221​                                                                    Page 10 sur 10

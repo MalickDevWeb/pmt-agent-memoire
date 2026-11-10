@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  latex:
+    build:
+      context: ./.devcontainer
+      dockerfile: Dockerfile
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    tty: true

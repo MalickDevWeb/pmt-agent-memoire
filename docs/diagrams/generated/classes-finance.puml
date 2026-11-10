@@ -1,0 +1,34 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module finance (tel que construit)
+skinparam classAttributeIconSize 0
+class Expense {
+  id : String
+  label : String
+  category : ExpenseCategory
+  amount : Long
+  date : LocalDateTime
+  description : String
+  status : ExpenseStatus
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+  + cancel()
+  + markAsPaid()
+  + markAsPending()
+  + updateDescription()
+  + updateLabel()
+}
+class ExpenseFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Transaction {
+  id : String
+  studentId : String
+  type : String
+  amount : String
+  currency : String
+  status : String
+  transactionDate : String
+}
+@enduml

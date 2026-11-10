@@ -1,0 +1,184 @@
+@startuml mem12-classes-bd
+' =====================================================================
+' MEM-12 — Classes du cœur métier (chapitre 4 du mémoire)
+' Statut  : TEL QUE CONSTRUIT — sélection manuelle, tirée du code
+' Sources : backend/src/main/java/ecole_221/sn/ecole/modules/** (chemins
+'           complets et numéros de ligne dans docs/diagrams/mem12-commentaire.md)
+' Date    : 2026-11-09 — Agent 11 (Seynabou Cissé)
+' Note    : extrait commenté des diagrammes GÉNÉRÉS (docs/diagrams/generated/),
+'           qui restent la référence exhaustive. Ce fichier n'en est pas une copie.
+' Légende : trait plein  = référence objet réelle dans le code
+'           pointillés   = lien DÉDUIT d'un champ *Id de type String
+'                          (aucune annotation JPA @ManyToOne/@OneToMany sur ces entités)
+'           TenantId     = la table porte organization_id filtré par Hibernate
+' =====================================================================
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+
+title MEM-12 — Cœur métier École 221 (TEL QUE CONSTRUIT, 2026-11-09)\nTraits pleins = référence réelle ; pointillés = lien « déduit » d'un identifiant String
+
+package "platform.organization - tables globales" {
+  class Organization <<organizations : sans TenantId>> {
+    - id : String
+    - name : String
+    - type : OrganizationType
+    - status : OrganizationStatus
+    - slug : String
+    - country, city, address : String
+    - phone, email, website, logo : String
+    - subscriptionId : String
+    - primaryDomainId : String
+    - settings : Map<String,Object>
+    - createdAt, updatedAt : LocalDateTime
+    - validatedAt, suspendedAt : LocalDateTime
+    --
+    + validate()
+    + suspend()
+    + reactivate()
+    + archive()
+    + unarchive()
+    + isActive() : boolean
+  }
+
+  class OrganizationUser <<organization_users : organization_id NON TenantId>> {
+    - id : String
+    - userId : String
+    - organizationId : String
+    - role : String
+    - permissions : List<String>
+    - scopeType : ScopeType
+    - scopeId : String
+    - status : MembershipStatus
+    - joinedAt, expiresAt : LocalDateTime
+    - isDelegated : Boolean
+    - delegationId : String
+    --
+    + activate()
+    + suspend()
+    + expire()
+    + hasPermission(p) : boolean
+    + addPermission(p)
+    + removePermission(p)
+  }
+}
+
+package "auth - table globale" {
+  class User <<users : sans TenantId>> {
+    - id : String
+    - nom, prenom : String
+    - email : String
+    - password : String
+    - matricule : String
+    - globalRole : RoleUtilisateur
+    - tenantProfiles : List<TenantProfile>
+    - photoUrl, telephone : String
+    - emailVerified, phoneVerified : Boolean
+    - lastLoginAt : LocalDateTime
+    - language, timezone : String
+    --
+    + addTenantProfile(p)
+    + changePassword(pwd)
+    + recordLogin()
+    + isAdmin() : boolean
+  }
+  class TenantProfile <<value object>> {
+    - tenantId : String
+    - role : RoleUtilisateur
+  }
+}
+
+package "parent - tables isolées par école" {
+  class Parent <<parents : TenantId>> {
+    - id : String
+    - userId : String
+    - nom, prenom : String
+    - email, telephone : String
+    - adresse, profession : String
+    - createdAt, updatedAt : LocalDateTime
+    --
+    + {static} create(...)
+  }
+  class ParentEnfant <<parent_enfant : TenantId>> {
+    - id : String
+    - parentId : String
+    - enfantId : String
+    - relation : String
+    - createdAt : LocalDateTime
+  }
+}
+
+package "professor - tables isolées par école" {
+  class Course <<courses : TenantId>> {
+    - id : String
+    - name : String
+    - classe : String
+    - totalHours : int
+    - profId : String
+    - code : String
+    - description : String
+  }
+  class GradeJpaEntity <<grades : TenantId, pas de modèle domaine>> {
+    - organizationId : String
+    - id : String
+    - studentId : String
+    - courseId : String
+    - cc : Double
+    - examen : Double
+    - average : Double
+  }
+}
+
+package "admissions - table isolée par école" {
+  class Candidate <<candidates : TenantId>> {
+    - id : String
+    - nom, prenom : String
+    - email, telephone : String
+    - statut : CandidateStatus
+    - note : Double
+    - filiereDemandee : String
+    --
+    + accept()
+    + reject()
+    + markAsInProgress()
+    + finalizeStatus()
+    + hasPassed() : boolean
+  }
+}
+
+' --- Lien réel (champ typé dans le domaine) ---
+User *-- "0..*" TenantProfile : tenantProfiles
+
+' --- Liens DÉDUITS (identifiants String, aucune contrainte JPA) ---
+OrganizationUser "0..*" ..> "1" User : userId (déduit)
+OrganizationUser "0..*" ..> "1" Organization : organizationId (déduit)
+TenantProfile ..> Organization : tenantId (déduit)
+Parent "0..1" ..> "1" User : userId (déduit)
+ParentEnfant "0..*" ..> "1" Parent : parentId (déduit)
+ParentEnfant "0..*" ..> "1" User : enfantId (déduit, élève ?)
+Course "0..*" ..> "1" User : profId (déduit)
+GradeJpaEntity "0..*" ..> "1" Course : courseId (déduit)
+GradeJpaEntity "0..*" ..> "1" User : studentId (déduit, élève ?)
+
+note as N1
+  <b>Isolation multi-école (SEC-003)</b>
+  Les tables marquées TenantId portent une colonne
+  organization_id remplie et filtrée par Hibernate
+  (@org.hibernate.annotations.TenantId) via
+  HibernateTenantIdentifierResolver / TenantContext.
+  Ce champ est dans l'entité JPA, pas dans le modèle
+  domaine (sauf GradeJpaEntity, montrée faute de
+  modèle domaine). users et organizations sont globales ;
+  l'appartenance passe par organization_users.
+end note
+
+note as N2
+  <b>Limites constatées</b>
+  - Aucune association JPA : tous les liens inter-tables
+    sont des String *Id, d'où les pointillés « déduit ».
+  - Schéma par ddl-auto: update, Flyway désactivé.
+  - Valeurs par défaut fictives dans le domaine
+    (User.matricule, Course.code / description).
+end note
+@enduml

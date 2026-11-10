@@ -1,0 +1,32 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+\title{Rapport technique}
+\author{Auteur}
+\date{\today}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+\section{Contexte}
+Description du projet.
+\section{Architecture}
+\subsection{Vue globale}
+\subsection{Choix techniques}
+\section{Implementation}
+\section{Tests}
+\section{Annexes}
+\begin{figure}[h]
+\centering
+\IfFileExists{captures/exemple.png}{\includegraphics[width=\linewidth]{captures/exemple.png}}{\fbox{Ajoutez docs/captures/exemple.png}}
+\caption{Capture code}
+\end{figure}
+\end{document}

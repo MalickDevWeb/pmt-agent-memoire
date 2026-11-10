@@ -1,0 +1,22 @@
+{
+  "name": "pmt_domentation",
+  "version": "1.0.1",
+  "description": "Projet isole pour documenter n'importe quel projet avec LaTeX, Docker, captures de code et templates.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "doc:init:report": "docker compose run --rm latex bash -lc './scripts/init-template.sh report'",
+    "doc:init:memoire": "docker compose run --rm latex bash -lc './scripts/init-template.sh memoire'",
+    "doc:build": "docker compose run --rm latex bash -lc './scripts/build.sh'",
+    "doc:watch": "docker compose run --rm latex bash -lc './scripts/watch.sh'",
+    "doc:clean": "docker compose run --rm latex bash -lc './scripts/clean.sh'",
+    "build": "bash ./scripts/build.sh",
+    "watch": "bash ./scripts/watch.sh",
+    "clean": "bash ./scripts/clean.sh",
+    "capture:code": "bash ./scripts/capture-code-silicon.sh",
+    "capture:vscode": "python3 ./scripts/capture-vscode-window.py",
+    "template:list": "ls -1 ./templates",
+    "template:init:report": "bash ./scripts/init-template.sh report",
+    "template:init:memoire": "bash ./scripts/init-template.sh memoire",
+    "doctor": "bash ./scripts/doctor.sh"
+  }
+}

@@ -1,0 +1,128 @@
+@startuml sequence-connexion
+' =====================================================================
+' Diagramme de séquence — Connexion par jeton (MEM-10)
+' Statut  : TEL QUE CONSTRUIT
+' Route   : POST /api/auth/login-token  (préfixe /api : application.yaml:4)
+' Sources (backend/src/main/java/ecole_221/sn/ecole/) :
+'   TRF = shared/infrastructure/tenant/TenantResolutionFilter.java
+'   JAF = infrastructure/security/JwtAuthenticationFilter.java
+'   SC  = infrastructure/config/SecurityConfig.java
+'   TMI = shared/infrastructure/tenant/TenantMembershipInterceptor.java
+'   AC  = modules/auth/infrastructure/web/AuthController.java
+'   LS  = modules/auth/application/service/LoginService.java
+'   JWT = infrastructure/security/JwtService.java
+'   GEH = infrastructure/web/GlobalExceptionHandler.java
+' Date    : 2026-11-09
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible : identifiants représentés par des libellés génériques.
+' =====================================================================
+
+title Connexion — POST /api/auth/login-token → JWT\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-09)</size>
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+autonumber
+
+actor "Utilisateur\n(client web / Swagger)" as C
+participant "TenantResolutionFilter" as TRF
+participant "JwtAuthenticationFilter" as JAF
+participant "SecurityConfig\n(chaîne Spring Security)" as SC
+participant "TenantMembershipInterceptor" as TMI
+participant "AuthController" as AC
+participant "LoginService" as LS
+participant "UserRepositoryPort" as UR
+participant "PasswordEncoder\n(BCrypt)" as PE
+participant "JwtService" as JWT
+participant "OrganizationUser /\nOrganization\nRepositoryPort" as OR
+participant "ActionLogger" as AL
+participant "GlobalExceptionHandler" as GEH
+
+C -> TRF : POST /api/auth/login-token\n{ email, password }
+activate TRF
+' TRF l.66-71 et l.218 : /api/auth/ = requête « plateforme »
+TRF -> TRF : isPlatformRequest() = vrai\nTenantContext.setPlatformMode(true)
+TRF -> JAF : chain.doFilter
+activate JAF
+' JAF l.41-54 : ni cookie auth_token ni en-tête Bearer -> on laisse passer
+JAF -> JAF : aucun jeton → requête anonyme
+JAF -> SC : filterChain.doFilter
+deactivate JAF
+activate SC
+' SC l.39 et l.95 : /auth/login-token dans PUBLIC_PATHS -> permitAll
+SC -> SC : /auth/login-token ∈ PUBLIC_PATHS → permitAll
+SC -> TMI : DispatcherServlet → preHandle
+deactivate SC
+activate TMI
+' TMI l.53-55 : mode plateforme ou utilisateur non authentifié -> true
+TMI -> TMI : mode plateforme → true
+TMI -> AC : loginToken(command)
+deactivate TMI
+activate AC
+' AC l.81-94
+AC -> LS : login(command)
+activate LS
+' LS l.50
+LS -> UR : findByEmail(email)
+activate UR
+UR --> LS : Optional<User>
+deactivate UR
+
+alt e-mail inconnu
+  ' LS l.51-55
+  LS --> AC : ResponseStatusException(401)
+  AC -> AL : logAuthAction("LOGIN_TOKEN", échec)
+  ' AC l.103-107 : journalise puis relance
+  AC --> GEH : relance l'exception
+  GEH --> C : 401 { AUTH_INVALID_CREDENTIALS }
+  ' GEH l.114-128
+else utilisateur trouvé
+  ' LS l.57-58 ; SC l.146-148 (BCryptPasswordEncoder)
+  LS -> PE : matches(password, hash)
+  activate PE
+  PE --> LS : booléen
+  deactivate PE
+  alt mot de passe invalide
+    ' LS l.60-64
+    LS --> AC : ResponseStatusException(401)
+    AC -> AL : logAuthAction("LOGIN_TOKEN", échec)
+    AC --> GEH : relance l'exception
+    GEH --> C : 401 { AUTH_INVALID_CREDENTIALS }
+  else mot de passe valide
+    ' LS l.67 ; JWT l.80-95 : sujet = e-mail, validité 24 h
+    LS -> JWT : generateToken(user)
+    activate JWT
+    JWT --> LS : JWT signé (expiration 24 h)
+    deactivate JWT
+    ' LS l.68, l.81-109 : résolution du slug de l'école
+    LS -> OR : findByUserId(userId) puis findById(orgId)
+    activate OR
+    OR --> LS : appartenance → slug de l'école
+    deactivate OR
+    note right of LS
+      resolveTenantSlug (LS l.81-109) :
+      1. 1re appartenance organization_users ;
+      2. sinon slug déduit de l'e-mail <x>@<slug>.sn ;
+      3. sinon repli « ecole221 ».
+    end note
+    ' LS l.70-78
+    LS --> AC : LoginResponseDto\n(id, nom, prénom, email, rôle, token, tenantSlug)
+    deactivate LS
+    ' AC l.97-99
+    AC -> AL : logAuthAction("LOGIN_TOKEN", succès, rôle)
+    ' AC l.102 : le jeton est renvoyé dans le corps
+    AC --> C : 200 OK  LoginResponseDto (token dans le corps)
+    deactivate AC
+  end
+end
+
+' TRF l.101-104
+TRF -> TRF : finally : TenantContext.clear()
+deactivate TRF
+
+note over C, AC
+  Variante web <b>POST /api/auth/login</b> (AC l.38-79) : même LoginService, mais le JWT est placé
+  dans un cookie HttpOnly « auth_token » (7 jours, AC l.28, 58-64) et retiré du corps (AC l.71).
+  Écart relevé : cookie de 7 jours pour un JWT de 24 h (JWT l.92).
+end note
+
+@enduml

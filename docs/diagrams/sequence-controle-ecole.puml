@@ -1,0 +1,127 @@
+@startuml sequence-controle-ecole
+' =====================================================================
+' Diagramme de séquence — Contrôle d'appartenance à l'école (SEC-003, MEM-10)
+' Statut  : TEL QUE CONSTRUIT
+' Exemple : GET /api/admin/students (toute route protégée suit le même chemin)
+' Sources (backend/src/main/java/ecole_221/sn/ecole/) :
+'   TRF = shared/infrastructure/tenant/TenantResolutionFilter.java
+'   JAF = infrastructure/security/JwtAuthenticationFilter.java
+'   SC  = infrastructure/config/SecurityConfig.java
+'   WC  = infrastructure/config/WebConfig.java
+'   TMI = shared/infrastructure/tenant/TenantMembershipInterceptor.java
+'   GEH = infrastructure/web/GlobalExceptionHandler.java
+'   ADM = modules/admin/infrastructure/web/AdminController.java
+' Date    : 2026-11-09
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible : écoles et utilisateurs désignés de façon générique.
+' =====================================================================
+
+title Contrôle d'appartenance à l'école (SEC-003)\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-09) — exemple GET /api/admin/students</size>
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+autonumber
+
+actor "Utilisateur connecté\n(ADMIN de l'école A)" as C
+participant "TenantResolutionFilter\n@Order(HIGHEST_PRECEDENCE)" as TRF
+participant "OrganizationRepositoryPort" as OR
+participant "JwtAuthenticationFilter" as JAF
+participant "SecurityConfig\n(règles d'URL)" as SC
+participant "TenantMembershipInterceptor" as TMI
+participant "OrganizationUserRepositoryPort" as OUR
+participant "AdminController" as ADM
+participant "GlobalExceptionHandler" as GEH
+
+C -> TRF : GET /api/admin/students\nCookie auth_token (ou Bearer)\nX-Tenant-Slug: <école visée>
+activate TRF
+' TRF l.46-62 : en-tête X-Tenant-Slug, puis X-Tenant-ID, puis Referer /t/{slug}, puis Host
+TRF -> TRF : identifiant d'école =\nX-Tenant-Slug > X-Tenant-ID > Referer /t/{slug} > Host
+' TRF l.66, l.212-225 : /api/admin n'est pas une route « plateforme »
+TRF -> OR : resolveOrganization(identifiant)\nslug, id, sous-domaine, domaine, e-mail
+' TRF l.125-177
+activate OR
+OR --> TRF : Organization | null
+deactivate OR
+alt école introuvable
+  ' TRF l.76-79, 92-94, 230-236
+  TRF --> C : 404 { "Tenant not found" }
+else école trouvée
+  ' TRF l.183-206 : contrôle du statut SAUTÉ si cookie auth_token ou Bearer présent (l.184-196)
+  opt requête sans jeton
+    TRF -> TRF : validateOrganizationStatus\nsuspendue / inactive → 403 (l.198-205, 241-258)
+  end
+  ' TRF l.85-86
+  TRF -> TRF : TenantContext.setCurrentOrganization(école)
+  TRF -> JAF : chain.doFilter
+  activate JAF
+  ' JAF l.41-49 : cookie auth_token, à défaut Authorization: Bearer
+  ' JAF l.56-67 : extractUsername, findByEmail, isTokenValid
+  JAF -> JAF : lire le JWT, valider,\nSecurityContext ← utilisateur + rôles
+  note right of JAF
+    Jeton invalide ou expiré : exception ignorée,
+    la requête continue en anonyme (JAF l.69-71).
+  end note
+  JAF -> SC : filterChain.doFilter
+  deactivate JAF
+  activate SC
+  ' SC l.105-106 : /admin/** -> ADMIN, ADMINISTRATOR, SUPER_ADMIN, PLATFORM_ADMIN
+  alt non authentifié
+    ' SC l.116-119
+    SC --> C : 401 Unauthorized
+  else rôle insuffisant pour /admin/**
+    ' SC l.105-106 (refus par Spring Security)
+    SC --> C : 403 Forbidden
+  else rôle autorisé
+    SC -> TMI : DispatcherServlet → preHandle\n(intercepteur enregistré sur /** : WC l.26-27)
+    deactivate SC
+    activate TMI
+    ' TMI l.51-55
+    TMI -> TMI : école du contexte ? mode plateforme ?\nutilisateur authentifié ?
+    alt rôle SUPER_ADMIN / PLATFORM_ADMIN
+      ' TMI l.38, l.56-58
+      TMI -> ADM : true (administre toutes les écoles)
+    else autre rôle
+      ' TMI l.59-60
+      TMI -> OUR : findByUserId(userId)
+      activate OUR
+      OUR --> TMI : appartenances (organization_users)
+      deactivate OUR
+      alt membre actif et non expiré de l'école visée
+        ' TMI l.64-65, 71
+        TMI -> ADM : true
+        activate ADM
+        ' ADM l.201
+        ADM --> C : 200 OK  liste des élèves de l'école
+        deactivate ADM
+      else appartenances existantes, mais pas à cette école
+        ' TMI l.66-70 : journal « SEC-003 REFUS »
+        TMI --> GEH : ResponseStatusException(403)
+        ' GEH l.114-128
+        GEH --> C : 403 { AUTH_ACCESS_DENIED }\n« vous n'êtes pas membre de cet établissement »
+      else aucune appartenance enregistrée
+        ' TMI l.61-63, 75-84 ; propriété strict, défaut false (TMI l.44)
+        alt ecole.security.tenant-membership.strict = true
+          TMI --> GEH : ResponseStatusException(403)
+          GEH --> C : 403 { AUTH_ACCESS_DENIED }
+        else strict = false (VALEUR PAR DÉFAUT)
+          TMI -> TMI : journal « SEC-003 TRANSITION »
+          TMI -> ADM : true (accès NON vérifié)
+        end
+      end
+    end
+    deactivate TMI
+  end
+end
+' TRF l.101-104
+TRF -> TRF : finally : TenantContext.clear()
+deactivate TRF
+
+legend bottom left
+  <b>Ordre réel :</b> filtre servlet de résolution d'école (priorité maximale, TRF l.23) → chaîne Spring Security
+  (JwtAuthenticationFilter ajouté avant UsernamePasswordAuthenticationFilter, SC l.122 ; TokenAuthenticationFilter
+  également ajouté, SC l.124, non détaillé) → règles d'URL (SC l.94-114) → intercepteur MVC (WC l.27) → contrôleur.
+  <b>Réserve :</b> le « 403 sinon » ne vaut aujourd'hui que pour un utilisateur ayant au moins une appartenance.
+  Sans appartenance, l'accès passe tant que strict = false (phase de transition, TMI l.28-32).
+end legend
+
+@enduml

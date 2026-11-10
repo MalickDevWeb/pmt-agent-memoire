@@ -1,0 +1,43 @@
+\chapter{Journal synthétique des usages de l'IA}
+% Modèle du canevas E221, section 7. Dupliquer la ligne pour chaque usage significatif.
+% Colonnes de la fiche Agent 09 : outil, date, objectif, élément concerné, vérification, décision
+% (gardé / modifié / rejeté). Sources : commits « Co-Authored-By », logs/agent_runs/*.jsonl,
+% agent_messages.md. AUCUNE donnée confidentielle ni secret dans cette annexe.
+% Ligne 1 (DOC-001 / MEM-01) : modèle attesté par logs/agent_runs/20261109-100550-agent09.jsonl:2
+% (champ "modele"). Décision laissée aux étudiants (fiche Agent 09 : les étudiants restent auteurs).
+% Ligne 2 (DOC-002 / MEM-04 + MEM-18) : run logs/agent_runs/20261109-105529-agent09.jsonl.
+% NB : les cellules commençant par « [ » sont entourées d'accolades (sinon \midrule lit un argument optionnel).
+% Colonnes en \raggedright (paquet array) pour éviter les « Underfull \hbox » des colonnes étroites.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Journal synthétique des usages de l'IA}
+  \label{tab:journal-ia}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.35\linewidth}>{\raggedright\arraybackslash}p{0.32\linewidth}@{}}
+    \toprule
+    \textbf{Date et outil} & \textbf{Usage et élément concerné} & \textbf{Vérification et décision} \\
+    \midrule
+    2026-11-09 -- Agent IA du pipeline École 221 (Agent 09, rédacteur technique), modèle \texttt{claude-opus-5-5} &
+    Ticket DOC-001 (carte MEM-01) : génération du squelette LaTeX du mémoire selon le canevas E221 (titres et commentaires, sans contenu rédigé) ; fichiers \texttt{memoire/docs/main.tex}, \texttt{preliminaires/}, \texttt{chapitres/}, \texttt{annexes/}, \texttt{references.bib} &
+    Compilation par la commande \texttt{memoire-build} ; contrôle du superviseur (rapport SUP-DOC-001) ; relecture des étudiants à faire. Décision : {[à valider par les étudiants : gardé / modifié / rejeté]} \\
+    \midrule
+    2026-11-09 -- Agent IA du pipeline École 221 (Agent 09), modèle \texttt{claude-opus-5-5} &
+    Ticket DOC-002 (cartes MEM-04 et MEM-18) : brouillon de l'introduction générale et de la section 8.5 (pipeline agentique), y compris le tableau des exécutions calculé depuis \texttt{logs/agent\_runs/} &
+    Chaque affirmation renvoie en note à un fichier du dépôt ; compilation \texttt{memoire-build} ; contrôle de Kasongo et relecture des étudiants à faire (recalcul du tableau conseillé). Décision : {[à valider par les étudiants : gardé / modifié / rejeté]} \\
+    \midrule
+    2026-11-09 -- Agents IA du pipeline (02 Architecte, 03 Backend, 04 Frontend, 05 QA), modèle \texttt{claude-opus-5-5} &
+    7 exécutions du 9 novembre, de 11~h~06 à 13~h~14 (6,41~\$ au total, journaux dans \texttt{logs/agent\_runs/}) : retrait des paiements fictifs (APP-BE-04, APP-BE-18, APP-FE-05), matrice de traçabilité exigences--tests (APP-QA-01), contrat de l'espace parent (APP-ARC-06) &
+    Diff relu par le Tech Lead, suite de tests backend et campagne QA isolée relancées avant chaque commit ; écarts relevés par les agents vérifiés puis corrigés (failles APP-BE-19 et APP-SEC-14). Décision : gardé (commité). {[à confirmer par les étudiants]} \\
+    \midrule
+    2026-11-09 -- Assistant de code IA utilisé par le Tech Lead, modèle \texttt{claude-opus-5-5} &
+    Orchestration des agents et corrections directes : contrôle d'accès des admissions et de l'espace parent, masquage des journaux, mises à jour de dépendances, intégration continue frontend, tests d'intégration SEC-003 &
+    Chaque correction accompagnée de tests (suite backend 158/158) et vérifiée sur un backend de QA isolé (16/16) ; preuves dans \texttt{docs/evidence/}. Décision : gardé (commité). {[à confirmer par les étudiants]} \\
+    \midrule
+    2026-11-10 -- Agent IA du pipeline École 221 (Agent 09, rédacteur technique) &
+    Rédaction approfondie des chapitres 3 (Méthodologie et supervision Kasongo), 4 (Conception, Architecture Hexagonale et isolation SEC-003), 5 (Chiffrage économique et modèle SaaS B2B) et 7 (Tests d'intégration certifiés 16/16) du mémoire académique &
+    Compilation LaTeX sans erreur (\texttt{memoire/scripts/build.sh}), conformité au canevas E221 2026, chiffres extraits directement de \texttt{docs/test-report.md} et \texttt{docs/business/chiffrage.md}. Décision : gardé. {[à confirmer par les étudiants]} \\
+    \midrule
+    {[À renseigner]} & {[Objectif, chapitre ou fichier, résumé de la demande]} & {[Source ou test, résultat du contrôle, modification ou rejet]} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

@@ -1,0 +1,54 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module finance (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "expenses" <<école>> {
+  * id : String
+    amount : Long
+    category : String
+    created_at : LocalDateTime
+    date : LocalDateTime
+    description : String
+    label : String
+  # organization_id : String
+    status : String
+    updated_at : LocalDateTime
+}
+entity "student_finances" <<école>> {
+  * id : String
+    classe : String
+    created_at : LocalDateTime
+    debt : Long
+    last_payment_date : LocalDateTime
+  # organization_id : String
+    paid : Long
+    status : String
+    student_id : String
+    student_name : String
+    total_required : Long
+    updated_at : LocalDateTime
+}
+entity "transactions" <<école>> {
+  * id : String
+    amount : Long
+    created_at : LocalDateTime
+    description : String
+  # organization_id : String
+    payment_method : String
+    reference : String
+    student_finance_id : String
+    student_id : String
+    student_name : String
+    transaction_date : LocalDateTime
+    transaction_type : String
+}
+entity "users" <<autre module>> #EEEEEE
+"student_finances" }o..|| "users" : student_id (déduit)
+"transactions" }o..|| "student_finances" : student_finance_id (déduit)
+"transactions" }o..|| "users" : student_id (déduit)
+@enduml

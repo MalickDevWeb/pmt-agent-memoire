@@ -1,0 +1,101 @@
+\chapter{Coût du projet et modèle économique}
+
+\section{Hypothèses de chiffrage et cadre méthodologique}
+
+L'évaluation financière du projet École~221 vise à établir une estimation réaliste des coûts d'ingénierie et d'exploitation nécessaires au déploiement en production d'une plateforme SaaS multi-établissements. Les hypothèses retenues reposent sur les constats d'architecture consignés dans \nolinkurl{docs/business/chiffrage.md} et dans les spécifications de déploiement (\nolinkurl{backend/render.yaml}).
+
+Le modèle financier distingue rigoureusement :
+\begin{enumerate}
+    \item \textbf{Les investissements initiaux (CAPEX)} : conception logicielle, développement des couches applicatives, qualification de sécurité, configuration des environnements et outillage du pipeline agentique.
+    \item \textbf{Les charges récurrentes d'exploitation (OPEX)} : hébergement cloud, bases de données infogérées, stockage de médias numériques, consommation d'API d'intelligence artificielle et maintenance préventive.
+\end{enumerate}
+
+La monnaie de référence retenue pour l'analyse économique locale est le \textbf{Franc CFA (XOF)}, converti à partir du dollar américain (\textbf{USD}) sur la base du taux moyen constaté de 1~USD = 610~FCFA. La période d'exploitation analysée couvre une première année d'exercice (12 mois).
+
+\section{Valorisation des ressources humaines}
+
+Le dimensionnement de l'effort d'ingénierie repose sur une équipe agile pluridisciplinaire. Le tableau~\ref{tab:cout-rh} présente la valorisation des jours-hommes (\emph{j/h}) selon les barèmes de prestations d'ingénierie logicielle en vigueur au Sénégal.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Rôle / Spécialité} & \textbf{Charge (j/h)} & \textbf{Taux journalier (FCFA)} & \textbf{Total (FCFA)} & \textbf{Total (USD)} \\
+\midrule
+Chef de Projet / Tech Lead & 45 & 50\,000 & 2\,250\,000 & 3\,688 \\
+Architecte Logiciel (Agent 02) & 20 & 60\,000 & 1\,200\,000 & 1\,967 \\
+Développeur Backend (Agent 03) & 50 & 40\,000 & 2\,000\,000 & 3\,278 \\
+Développeur Frontend (Agent 04) & 45 & 40\,000 & 1\,800\,000 & 2\,950 \\
+Ingénieur QA \& Tests (Agent 05) & 30 & 35\,000 & 1\,050\,000 & 1\,721 \\
+Expert Sécurité / DevSecOps (Agent 07) & 20 & 50\,000 & 1\,000\,000 & 1\,639 \\
+Rédacteur Technique (Agent 09) & 15 & 30\,000 & 450\,000 & 737 \\
+\midrule
+\textbf{Total Ressources Humaines} & \textbf{225 j/h} & — & \textbf{9\,750\,000} & \textbf{15\,980} \\
+\bottomrule
+\end{tabular}
+\caption{Valorisation de la charge de travail en ingénierie logicielle}
+\label{tab:cout-rh}
+\end{table}
+
+\section{Matériel et licences logicielles}
+
+Dans une volonté d'optimisation des coûts de démarrage, la plateforme s'appuie intégralement sur des technologies open-source sous licences libres (MIT, Apache~2.0, BSD) :
+\begin{itemize}
+    \item \textbf{Systèmes et runtimes} : Linux Ubuntu, OpenJDK~21, Node.js~20/22, Docker Engine (coût de licence : 0 FCFA).
+    \item \textbf{Frameworks et bibliothèques} : Spring Boot~3, React~18, Tailwind CSS, PostgreSQL~15 (coût de licence : 0 FCFA).
+    \item \textbf{Équipements matériels} : les développements ont été réalisés sur les postes de travail existants des étudiants et encadreurs, sans acquisition de serveurs physiques sur site.
+\end{itemize}
+
+\section{Hébergement Cloud et services managés}
+
+Les coûts récurrents d'infrastructure cloud ont été chiffrés pour un palier cible de 5 établissements connectés en production (environ 5\,000 étudiants actifs au total) :
+\begin{itemize}
+    \item \textbf{Serveur d'application Backend (Render)} : instance Docker \emph{Starter} (512 Mo RAM, 0.5 CPU) assurant le service de l'API Spring Boot : 7~USD/mois.
+    \item \textbf{Base de données managée (Neon / Render PostgreSQL)} : instance PostgreSQL avec réplication et sauvegardes automatisées quotidiennes : 15~USD/mois.
+    \item \textbf{Mise en cache en mémoire (Upstash / Render Redis)} : stockage des sessions WebSocket et limitation de débit : 5~USD/mois.
+    \item \textbf{Stockage d'images et justificatifs (Cloudinary)} : plan gratuit étendu couvrant jusqu'à 25 crédits mensuels de stockage et de bande passante : 0~USD/mois.
+    \item \textbf{Nom de domaine institutionnel} : réservation d'un domaine personnalisé (\texttt{.sn} ou \texttt{.edu.sn}) avec certificats TLS Let's Encrypt : 25~USD/an.
+    \item \textbf{Services d'Intelligence Artificielle (Pipeline Agentique)} : la consommation de jetons des modèles de langage lors des phases de développement, d'audit et de tests assistés par IA représente un coût cumulé d'environ 45~USD d'après l'analyse des journaux d'exécution (\nolinkurl{logs/agent_runs/*.jsonl}).
+\end{itemize}
+
+\section{Maintenance et provision pour aléas}
+
+Une provision annuelle pour imprévus équivalente à 10\,\% des coûts opérationnels est budgétée pour faire face aux pics de charge imprévus lors des rentrées scolaires, aux besoins de bande passante supplémentaire et aux renouvellements de certificats d'authentification.
+
+\section{Synthèse générale des coûts}
+
+Le tableau~\ref{tab:synthese-couts} récapitule l'ensemble du budget prévisionnel d'implémentation et de fonctionnement sur douze mois.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lp{6cm}rr}
+\toprule
+\textbf{Poste de dépense} & \textbf{Détail de la prestation ou du service} & \textbf{Montant (FCFA)} & \textbf{Montant (USD)} \\
+\midrule
+\multicolumn{4}{l}{\textbf{1. Investissement Initial (CAPEX)}} \\
+Développement logiciel & Conception, codage, tests et audits (225 j/h) & 9\,750\,000 & 15\,980 \\
+Consommation IA & Inférence et audits automatisés du pipeline & 27\,450 & 45 \\
+Licences logicielles & Écosystème open-source & 0 & 0 \\
+\midrule
+\textbf{Sous-total Investissement} & & \textbf{9\,777\,450} & \textbf{16\,025} \\
+\midrule
+\multicolumn{4}{l}{\textbf{2. Exploitation Annuelle (OPEX - 12 mois)}} \\
+Serveur web backend & Render Starter (12 mois $\times$ 7 USD) & 51\,240 & 84 \\
+Base de données managée & PostgreSQL managé (12 mois $\times$ 15 USD) & 109\,800 & 180 \\
+Cache Redis & Upstash / Render (12 mois $\times$ 5 USD) & 36\,600 & 60 \\
+Nom de domaine & Extension nationale annuelle & 15\,250 & 25 \\
+Provision aléas (10\,\%) & Maintenance corrective et montées en charge & 21\,289 & 35 \\
+\midrule
+\textbf{Sous-total Exploitation (1 an)} & & \textbf{234\,179} & \textbf{384} \\
+\midrule
+\textbf{BUDGET TOTAL GLOBAL} & \textbf{Investissement + 1 an d'exploitation} & \textbf{10\,011\,629} & \textbf{16\,409} \\
+\bottomrule
+\end{tabular}
+\caption{Synthèse budgétaire du projet École 221 sur 12 mois}
+\label{tab:synthese-couts}
+\end{table}
+
+\noindent
+Cette structure de coûts met en évidence l'intérêt économique du modèle SaaS : le coût récurrent d'infrastructure annuel (moins de 250\,000 FCFA pour cinq établissements) est aisément amorti par les formules d'abonnements scolaires prévues dans le module Super-Admin, garantissant ainsi la viabilité financière de la plateforme.

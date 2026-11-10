@@ -1,0 +1,65 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module dashboard (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "activity_logs" <<école>> {
+  * id : String
+    activity_time : LocalDateTime
+    activity_type : String
+    additional_info : String
+    created_at : LocalDateTime
+    description : String
+    entity_id : String
+    entity_type : String
+  # organization_id : String
+    user_id : String
+    user_name : String
+    user_role : String
+}
+entity "dashboard_alerts" <<école>> {
+  * id : String
+    additional_data : String
+    alert_type : String
+    created_at : LocalDateTime
+    expires_at : LocalDateTime
+    is_active : Boolean
+    message : String
+  # organization_id : String
+    severity : String
+    title : String
+    updated_at : LocalDateTime
+}
+entity "dashboard_kpis" <<école>> {
+  * id : String
+    category : String
+    created_at : LocalDateTime
+    currency : String
+    description : String
+    kpi_key : String
+    kpi_name : String
+    last_updated : LocalDateTime
+  # organization_id : String
+    trend : String
+    trend_value : String
+    value : String
+    value_type : String
+}
+entity "regional_stats" <<école>> {
+  * id : String
+    academic_year : String
+    color_code : String
+    created_at : LocalDateTime
+    last_updated : LocalDateTime
+  # organization_id : String
+    percentage : Double
+    region_name : String
+    student_count : Integer
+}
+entity "users" <<autre module>> #EEEEEE
+"activity_logs" }o..|| "users" : user_id (déduit)
+@enduml

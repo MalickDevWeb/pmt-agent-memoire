@@ -1,0 +1,22 @@
+% Page de garde : visuel fourni par l'étudiant (images/couverture.jpg, format A4), en pleine page.
+% Informations : Papa Malick Teuw, encadré par Coach Wane, École Professionnelle 221,
+% Licence Professionnelle, Développement Web et Mobile, 2025/2026 ; titre du projet ajouté.
+% Pour une impression nette, remplacer images/couverture.jpg par une version de 2480 × 3508 px (300 dpi).
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[inner sep=0pt] at (current page.center)
+      {\includegraphics[width=\paperwidth, height=\paperheight]{images/couverture.jpg}};
+    % Nom de l'établissement (la mention d'origine a été effacée de l'image)
+    \node[text=black] at ([yshift=-91mm]current page.north)
+      {\fontfamily{qtm}\selectfont\bfseries\fontsize{25}{30}\selectfont ÉCOLE PROFESSIONNELLE 221};
+    % Diplôme (mention d'origine effacée de l'image), entre les deux tirets rouges
+    \node[text=black] at ([yshift=-140.6mm]current page.north)
+      {\fontfamily{qtm}\selectfont\bfseries\itshape\fontsize{17}{20}\selectfont
+       En vue de l'obtention de la Licence Professionnelle};
+    % Titre du projet (exigé par le canevas)
+    \node[text={rgb,255:red,139;green,13;blue,18}] at ([yshift=-149.6mm]current page.north)
+      {\resizebox{178mm}{!}{\fontfamily{qtm}\selectfont\bfseries\fontsize{15}{18}\selectfont
+       École 221 : ERP scolaire multi-écoles et pipeline de développement agentique}};
+  \end{tikzpicture}
+\end{titlepage}

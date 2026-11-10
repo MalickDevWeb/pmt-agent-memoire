@@ -1,0 +1,102 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module professor (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "courses" <<école>> {
+  * id : String
+    classe : String
+    code : String
+    description : String
+    name : String
+  # organization_id : String
+    prof_id : String
+    total_hours : int
+}
+entity "grades" <<école>> {
+  * id : String
+    average : Double
+    cc : Double
+    course_id : String
+    examen : Double
+  # organization_id : String
+    student_id : String
+}
+entity "homeworks" <<école>> {
+  * id : String
+    course_id : String
+    deadline : String
+    description : String
+  # organization_id : String
+    priority : String
+    title : String
+}
+entity "lessons" <<école>> {
+  * id : String
+    course_id : String
+    date : String
+    duration : int
+  # organization_id : String
+    title : String
+}
+entity "modules" <<école>> {
+  * id : String
+    course_id : String
+    name : String
+  # organization_id : String
+}
+entity "quizzes" <<école>> {
+  * id : String
+    course_id : String
+    duration : int
+  # organization_id : String
+    title : String
+}
+entity "reminders" <<école>> {
+  * id : String
+    content : String
+    course_id : String
+    created_at : LocalDateTime
+    due_date : LocalDateTime
+    is_completed : Boolean
+    is_urgent : Boolean
+  # organization_id : String
+    professor_id : String
+    updated_at : LocalDateTime
+}
+entity "schedule_sessions" <<école>> {
+  * id : String
+    cancellation_reason : String
+    classe : String
+    course_id : String
+    course_title : String
+    created_at : LocalDateTime
+    date_str : String
+    day : String
+  # organization_id : String
+    original_date : LocalDateTime
+    professor_id : String
+    rescheduled_to : LocalDateTime
+    room : String
+    status : String
+    time : String
+    type : String
+    updated_at : LocalDateTime
+}
+entity "users" <<autre module>> #EEEEEE
+"courses" }o..|| "users" : prof_id (déduit)
+"grades" }o..|| "users" : student_id (déduit)
+"grades" }o..|| "courses" : course_id (déduit)
+"homeworks" }o..|| "courses" : course_id (déduit)
+"lessons" }o..|| "courses" : course_id (déduit)
+"modules" }o..|| "courses" : course_id (déduit)
+"quizzes" }o..|| "courses" : course_id (déduit)
+"reminders" }o..|| "courses" : course_id (déduit)
+"reminders" }o..|| "users" : professor_id (déduit)
+"schedule_sessions" }o..|| "courses" : course_id (déduit)
+"schedule_sessions" }o..|| "users" : professor_id (déduit)
+@enduml

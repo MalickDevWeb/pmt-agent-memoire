@@ -1,0 +1,47 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module professor (tel que construit)
+skinparam classAttributeIconSize 0
+class Course {
+  id : String
+  name : String
+  classe : String
+  totalHours : int
+  profId : String
+  code : String
+  description : String
+  + updateCode()
+  + updateDescription()
+  + updateName()
+}
+class CourseFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Homework {
+  id : String
+  courseId : String
+  title : String
+  description : String
+  priority : Priority
+  deadline : LocalDate
+  + updateDescription()
+  + updateTitle()
+}
+class HomeworkFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Lesson {
+  id : String
+  courseId : String
+  title : String
+  duration : int
+  date : LocalDate
+  + updateTitle()
+}
+class LessonFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

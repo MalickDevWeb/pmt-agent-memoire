@@ -1,0 +1,24 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module security (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "vigil_profiles" <<école>> {
+  * id : String
+    badge_id : String
+    created_at : LocalDateTime
+    derniere_connexion : LocalDateTime
+    equipe : String
+    nom : String
+  # organization_id : String
+    prenom : String
+    role : String
+    statut : String
+    updated_at : LocalDateTime
+    zone : String
+}
+@enduml

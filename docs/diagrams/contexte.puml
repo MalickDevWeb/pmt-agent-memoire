@@ -1,0 +1,83 @@
+@startuml contexte
+' =====================================================================
+' Diagramme de contexte — École 221
+' Statut  : TEL QUE CONSTRUIT (éléments non prouvés marqués « cible » ou « déduit »)
+' Sources : backend/src/main/resources/application.yaml (l.137-170)
+'           backend/render.yaml (l.23-31)
+'           backend/.../infrastructure/config/SecurityConfig.java (l.86-95, 115-120)
+'           backend/.../auth/domain/valueobject/RoleUtilisateur.java (l.20, 75)
+'           backend/.../parent/infrastructure/web/ParentController.java (l.27)
+'           backend/.../media/.../CloudinaryStorageAdapter.java (l.32-60)
+'           backend/.../email/.../BrevoEmailService.java (l.20) ; EmailConfig.java (l.17)
+'           backend/.../ai/.../GeminiAIService.java (l.18) ; MistralAIService.java (l.19, 70)
+'           backend/.../admissions/.../AdmissionController.java (l.241-242)
+'           docs/architecture.md
+' Date    : 2026-11-07
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible : ni secret, ni URL d'hébergement, ni nom réel.
+' =====================================================================
+
+title École 221 — Diagramme de contexte\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-07)</size>
+
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  BackgroundColor<<systeme>> #DCEBFF
+  BorderColor<<systeme>> #1F4E8C
+  BackgroundColor<<externe>> #F2F2F2
+  BorderColor<<externe>> #555555
+  BackgroundColor<<optionnel>> #FFF6D6
+  BorderColor<<optionnel>> #B08900
+  BackgroundColor<<cible>> #FFFFFF
+  BorderColor<<cible>> #999999
+  FontColor<<cible>> #777777
+}
+
+' ---------------- Acteurs (rôles RoleUtilisateur) ----------------
+actor "Super-admin\n<size:10>SUPER_ADMIN / PLATFORM_ADMIN</size>" as SA
+actor "Directeur d'école\n<size:10>rôle ADMIN (correspondance supposée)</size>" as DIR
+actor "Enseignant\n<size:10>PROFESSEUR</size>" as ENS
+actor "Élève\n<size:10>ETUDIANT</size>" as ELV
+actor "Parent\n<size:10>PARENT</size>" as PAR
+
+' ---------------- Système ----------------
+rectangle "École 221\n<size:10>ERP scolaire multi-écoles (SaaS)</size>\n<size:10>SPA React (PWA) + API REST/WebSocket Spring Boot</size>\n<size:10>isolation par école : organization_id (@TenantId)</size>" <<systeme>> as SYS
+
+' ---------------- Services externes ----------------
+rectangle "Cloudinary\n<size:10>stockage de médias / documents</size>\n<size:10>actif si les clés sont fournies,</size>\n<size:10>sinon mode simulation</size>" <<externe>> as CLD
+rectangle "Brevo (SMTP)\n<size:10>envoi d'e-mails</size>\n<size:10>code présent, désactivé par défaut</size>\n<size:10>(EMAIL_PROVIDER = mock)</size>" <<optionnel>> as BRV
+rectangle "Gemini / Mistral\n<size:10>assistant IA</size>\n<size:10>code présent, désactivé par défaut</size>\n<size:10>(AI_PROVIDER = mock)</size>" <<optionnel>> as IA
+rectangle "Render\n<size:10>hébergeur : API, PostgreSQL, Redis</size>" <<externe>> as RND
+rectangle "Vercel\n<size:10>hébergeur du frontend</size>\n<size:10>(déduit de l'origine CORS)</size>" <<externe>> as VRC
+rectangle "Paiement mobile\n(Wave / Orange Money)\n<size:10>CIBLE — aucune intégration d'API</size>" <<cible>> as PAY
+
+' ---------------- Liens acteurs -> système (HTTPS) ----------------
+SA  --> SYS : gère les écoles (tenants),\nplans et abonnements\n/super-admin/**, /platform/**
+DIR --> SYS : administre son école\n/admin/**, /finance/**, /dashboard/**
+ENS --> SYS : cours, notes, présences\n/professor/**
+ELV --> SYS : emploi du temps, notes\n/student/**
+PAR --> SYS : suivi de ses enfants\n/parent/**
+
+' ---------------- Liens système -> externes ----------------
+SYS --> CLD : SDK Cloudinary\n(téléversement)
+SYS ..> BRV : SMTP\n(si EMAIL_PROVIDER = brevo)
+SYS ..> IA : HTTPS REST\n(si AI_PROVIDER = gemini | mistral)
+SYS --> RND : hébergé sur\n(render.yaml)
+SYS ..> VRC : frontend hébergé sur\n(déduit)
+SYS ..> PAY : <color:#777777>cible — non implémenté</color>
+
+legend right
+  <b>Légende</b>
+  |= Élément |= Signification |
+  | <back:#DCEBFF>  bleu  </back> | Système École 221 |
+  | <back:#F2F2F2>  gris  </back> | Service externe utilisé (prouvé par le code / la config) |
+  | <back:#FFF6D6>  jaune  </back> | Intégration codée mais désactivée par défaut (bascule par variable d'environnement) |
+  | blanc, texte gris | <b>CIBLE</b> : non implémenté, présenté pour mémoire |
+  | ——> trait plein | Lien prouvé (appel réel ou déclaration de configuration) |
+  | ··> pointillés | Lien conditionnel, <b>déduit</b> ou <b>cible</b> |
+  Rôles non représentés : SECRETAIRE, COMPTABLE, VIGIL, VISITEUR ;
+  le candidat accède sans compte aux routes publiques /candidatures/**.
+endlegend
+
+@enduml

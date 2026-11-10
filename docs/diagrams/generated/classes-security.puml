@@ -1,0 +1,18 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module security (tel que construit)
+skinparam classAttributeIconSize 0
+class VigilProfile {
+  id : String
+  name : String
+  role : String
+  userId : String
+  status : String
+  createdAt : String
+}
+class VigilProfileFactory {
+  {static} + create()
+  {static} + createDefault()
+  {static} + reconstitute()
+}
+@enduml

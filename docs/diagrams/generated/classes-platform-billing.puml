@@ -1,0 +1,45 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module platform-billing (tel que construit)
+skinparam classAttributeIconSize 0
+class Entitlement {
+  id : String
+  featureCode : String
+  maxLimit : Integer
+  isEnabled : Boolean
+  + toggle()
+  + updateLimit()
+  {static} + create()
+}
+class Plan {
+  id : String
+  name : String
+  description : String
+  priceMonthly : BigDecimal
+  priceYearly : BigDecimal
+  isActive : Boolean
+  createdAt : LocalDateTime
+  entitlements : List<Entitlement>
+  + activate()
+  + addEntitlement()
+  + deactivate()
+  + removeEntitlement()
+  + update()
+  {static} + create()
+}
+class Subscription {
+  id : String
+  organizationId : String
+  planId : String
+  status : String
+  startDate : LocalDateTime
+  endDate : LocalDateTime
+  nextBillingDate : LocalDateTime
+  + activate()
+  + cancel()
+  + changePlan()
+  + suspend()
+  {static} + create()
+}
+Plan --> "*" Entitlement : entitlements
+@enduml

@@ -1,0 +1,18 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module ai (tel que construit)
+skinparam classAttributeIconSize 0
+class ChatResponse <<record>> {
+  text : String
+  model : String
+  provider : String
+  timestamp : LocalDateTime
+  metadata : Object>
+}
+class ChatResponseFactory {
+  {static} + create()
+  {static} + createSimple()
+  {static} + createWithMetadata()
+  {static} + reconstitute()
+}
+@enduml

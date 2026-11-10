@@ -1,0 +1,32 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module referential (tel que construit)
+skinparam classAttributeIconSize 0
+enum ReferenceList {
+  EXPENSE_CATEGORY
+  "Catégories de dépenses"
+  Mode.OPEN)
+  CANDIDATE_STATUS
+  "Statuts de candidature"
+  Mode.LOCKED)
+  + label()
+  + mode()
+  + slug()
+  {static} + fromSlug()
+}
+class ReferenceValue <<record>> {
+  id : String
+  list : ReferenceList
+  code : String
+  label : String
+  color : String
+  sortOrder : int
+  active : boolean
+  system : boolean
+  organizationId : String
+  + asOverrideFor()
+  + withChanges()
+  {static} + toCode()
+}
+ReferenceValue --> "1" ReferenceList : list
+@enduml

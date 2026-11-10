@@ -1,0 +1,103 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module platform-organization (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "organization_branding" {
+  * organization_id : String
+    accent_color : String
+    custom_css : String
+    favicon_url : String
+    font_family : String
+    logo_url : String
+    primary_color : String
+    secondary_color : String
+}
+entity "organization_features" {
+  * organization_id : String
+    enable_live_classes : Boolean
+    enable_online_payment : Boolean
+    enable_parent_portal : Boolean
+    enable_sms_notifications : Boolean
+}
+entity "organization_settings" {
+  * organization_id : String
+    academic_year_end : LocalDate
+    academic_year_start : LocalDate
+    date_format : String
+    language : String
+    time_format : String
+    timezone : String
+}
+entity "organization_users" {
+  * id : String
+    delegation_id : String
+    expires_at : LocalDateTime
+    is_delegated : Boolean
+    joined_at : LocalDateTime
+    organization_id : String
+    permissions : List<String>
+    role : String
+    role_id : String
+    scope_id : String
+    scope_type : String
+    status : String
+    user_id : String
+}
+entity "organizations" {
+  * id : String
+    address : String
+    city : String
+    country : String
+    created_at : LocalDateTime
+    email : String
+    logo : String
+    name : String
+    phone : String
+    primary_domain_id : String
+    settings : Map<String, Object>
+    slug : String
+    status : OrganizationStatusJpa
+    subscription_id : String
+    suspended_at : LocalDateTime
+    type : OrganizationTypeJpa
+    updated_at : LocalDateTime
+    validated_at : LocalDateTime
+    website : String
+}
+entity "permissions" {
+  * id : String
+    action : String
+    category : String
+    description : String
+    name : String
+    resource : String
+    supports_scope : Boolean
+}
+entity "role_permissions" {
+  * id : String
+    conditions : Map<String, Object>
+    permission_id : String
+    role_id : String
+}
+entity "roles" <<école>> {
+  * id : String
+    created_at : LocalDateTime
+    description : String
+    is_system_role : Boolean
+    name : String
+  # organization_id : String
+    permissions : List<String>
+}
+entity "subscriptions" <<autre module>> #EEEEEE
+entity "users" <<autre module>> #EEEEEE
+"organization_users" }o..|| "users" : user_id (déduit)
+"organization_users" }o..|| "roles" : role_id (déduit)
+"organizations" }o..|| "subscriptions" : subscription_id (déduit)
+"role_permissions" }o..|| "roles" : role_id (déduit)
+"role_permissions" }o..|| "permissions" : permission_id (déduit)
+@enduml

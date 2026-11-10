@@ -1,0 +1,126 @@
+@startuml deploiement
+' =====================================================================
+' Diagramme de déploiement — École 221
+' Statut  : TEL QUE CONSTRUIT (éléments non prouvés marqués « déduit » ou « cible »)
+' Sources : docker-compose.yml (l.1-54)
+'           backend/render.yaml (l.1-42)
+'           backend/src/main/resources/application.yaml (l.1-4, 27-30, 46, 62, 69-92, 137-170)
+'           frontend/Dockerfile (l.1-13) ; frontend/nginx.conf (l.1-38)
+'           frontend/vite.config.ts (l.16-28) ; frontend/src/shared/lib/apiClient.ts (l.6)
+'           frontend/public/manifest.json, frontend/public/sw.js (PWA)
+'           backend/.../infrastructure/config/SecurityConfig.java (l.115-120)
+'           backend/.../infrastructure/config/WebSocketConfig.java (l.24)
+'           backend/.../infrastructure/config/RedisConfig.java (l.66)
+'           docs/architecture.md
+' Date    : 2026-11-07
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible : ni secret, ni mot de passe, ni URL d'hébergement.
+' =====================================================================
+
+title École 221 — Diagramme de déploiement\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-07) — trois environnements</size>
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam nodesep 40
+skinparam ranksep 50
+skinparam node {
+  BackgroundColor<<deduit>> #FFFFFF
+  BorderColor<<deduit>> #999999
+  BorderStyle<<deduit>> dashed
+}
+skinparam cloud {
+  BackgroundColor<<optionnel>> #FFF6D6
+  BorderColor<<optionnel>> #B08900
+}
+
+actor "Utilisateur\n(navigateur web / PWA)" as U
+
+' ================= 1. Développement local =================
+frame "Env. 1 — Développement local (poste développeur)" as DEV {
+  node "Serveur Vite\n:5173" as DEV_VITE {
+    artifact "SPA React (HMR)" as DEV_SPA
+  }
+  node "JVM Spring Boot\n:8090, contexte /api" as DEV_API
+  database "PostgreSQL\nlocalhost:5432" as DEV_DB
+  database "Redis\nlocalhost:6379\n(valeur par défaut)" as DEV_REDIS
+}
+
+' ================= 2. Docker Compose =================
+frame "Env. 2 — Docker Compose (docker-compose.yml)" as DC {
+  node "conteneur frontend\nnginx:alpine — :80 publié 8082" as DC_FE {
+    artifact "SPA React (build Vite)" as DC_SPA
+    artifact "proxy /api/ et /api/ws" as DC_PROXY
+  }
+  node "conteneur backend\nimage Dockerfile — :8090" as DC_API {
+    artifact "API Spring Boot\nREST + WebSocket STOMP/SockJS" as DC_JAR
+  }
+  database "conteneur postgres\npostgres:15-alpine — :5432\nvolume postgres_data" as DC_DB
+  note bottom of DC_API
+    <b>Aucun service Redis</b> déclaré dans
+    docker-compose.yml : le cache vise
+    la valeur par défaut (localhost:6379).
+    Hypothèse : cache contourné via
+    CacheErrorHandler (RedisConfig.java:66).
+  end note
+}
+
+' ================= 3. Production =================
+frame "Env. 3 — Production" as PROD {
+  frame "Render (backend/render.yaml, plan starter)" as RENDER {
+    node "Service web « ecole-221-backend »\nenv docker, branche main — PORT 8080" as PR_API {
+      artifact "API Spring Boot\n/api — REST + /api/ws" as PR_JAR
+    }
+    database "Render PostgreSQL 15\n« ecole-db »" as PR_DB
+    database "Render Redis\n« ecole-redis »\ncache Spring (TTL 15 min)" as PR_REDIS
+  }
+  node "Vercel — frontend\n(DÉDUIT : origine CORS autorisée,\naucun fichier de config Vercel)" <<deduit>> as PR_FE {
+    artifact "SPA React (PWA)" as PR_SPA
+  }
+}
+
+' ================= Services externes =================
+cloud "Cloudinary\n(médias)" as CLD
+cloud "Brevo SMTP\n(désactivé par défaut :\nEMAIL_PROVIDER = mock)" <<optionnel>> as BRV
+cloud "Gemini / Mistral\n(désactivés par défaut :\nAI_PROVIDER = mock)" <<optionnel>> as IA
+
+' ---------------- Liens Env. 1 ----------------
+U --> DEV_VITE : HTTP :5173
+DEV_VITE --> DEV_API : proxy /api\n→ 127.0.0.1:8090
+DEV_API --> DEV_DB : JDBC
+DEV_API --> DEV_REDIS : Lettuce (SSL activé)
+
+' ---------------- Liens Env. 2 ----------------
+U --> DC_FE : HTTP :8082
+DC_PROXY --> DC_API : HTTP backend:8090\n(+ Upgrade WebSocket)
+DC_API --> DC_DB : JDBC postgres:5432\n(depends_on: service_healthy)
+
+' ---------------- Liens Env. 3 ----------------
+U ..> PR_FE : HTTPS (déduit)
+U ..> PR_API : HTTPS REST / WebSocket\n(via VITE_API_URL — valeur non lue, déduit)
+PR_API --> PR_DB : JDBC\n(DATABASE_URL fromDatabase)
+PR_API --> PR_REDIS : Redis\n(REDIS_URL fromService)
+PR_API --> CLD : SDK Cloudinary\n(clés en secretEnvVars)
+PR_API ..> BRV : SMTP (si activé)
+PR_API ..> IA : HTTPS REST (si activé)
+
+note right of PR_DB
+  Schéma géré par Hibernate
+  <b>ddl-auto: update</b> ; Flyway désactivé
+  (application.yaml:46, 62).
+  Schéma partagé, isolation par
+  organization_id (@TenantId).
+end note
+
+legend right
+  <b>Légende</b>
+  |= Élément |= Signification |
+  | trait plein ——> | Lien prouvé par la configuration (fichier cité en en-tête) |
+  | pointillés ··> | Lien <b>déduit</b> ou conditionnel (non prouvé par un fichier de déploiement) |
+  | nœud à bord pointillé | Hébergement <b>déduit</b> (pas de fichier de configuration dans le dépôt) |
+  | nuage jaune | Intégration codée mais désactivée par défaut (render.yaml ne l'active pas) |
+  | nuage gris | Service externe utilisé |
+  Paiement mobile : <b>cible</b>, absent du déploiement (aucune intégration codée).
+  Les secrets sont injectés par variables d'environnement ; aucune valeur n'est reproduite ici.
+endlegend
+
+@enduml

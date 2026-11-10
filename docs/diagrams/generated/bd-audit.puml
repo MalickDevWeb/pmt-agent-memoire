@@ -1,0 +1,58 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module audit (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "audit_logs" <<école>> {
+  * id : String
+    action_description : String
+    action_timestamp : LocalDateTime
+    action_type : String
+    actor_id : String
+    actor_name : String
+    actor_role : String
+    additional_context : String
+    created_at : LocalDateTime
+    entity_id : String
+    entity_type : String
+    failure_reason : String
+    ip_address : String
+    module : String
+    new_value : String
+    old_value : String
+  # organization_id : String
+    severity : String
+    status : String
+    user_agent : String
+}
+entity "security_events" <<école>> {
+  * id : String
+    access_status : String
+    additional_data : String
+    badge_id : String
+    camera_recording : Boolean
+    camera_reference : String
+    checkpoint_id : String
+    checkpoint_name : String
+    created_at : LocalDateTime
+    denial_reason : String
+    event_category : String
+    event_description : String
+    event_timestamp : LocalDateTime
+    event_type : String
+    investigation_status : String
+    location : String
+  # organization_id : String
+    person_id : String
+    person_name : String
+    person_type : String
+    requires_investigation : Boolean
+    resolution_notes : String
+    resolved_by : String
+    severity : String
+}
+@enduml

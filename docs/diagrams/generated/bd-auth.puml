@@ -1,0 +1,26 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module auth (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "users" {
+  * id : String
+    email : String
+    email_verified : Boolean
+    language : String
+    last_login_at : LocalDateTime
+    matricule : String
+    nom : String
+    password : String
+    phone_verified : Boolean
+    photo_url : String
+    prenom : String
+    role : String
+    telephone : String
+    timezone : String
+}
+@enduml

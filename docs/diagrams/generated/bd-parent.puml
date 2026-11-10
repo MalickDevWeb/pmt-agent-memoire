@@ -1,0 +1,47 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module parent (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "parent_appointments" <<école>> {
+  * id : String
+    created_at : LocalDateTime
+    date_souhaitee : String
+    meet_url : String
+    motif : String
+  # organization_id : String
+    parent_id : String
+    professeur_id : String
+    professeur_nom : String
+    status : String
+}
+entity "parent_enfant" <<école>> {
+  * id : String
+    created_at : LocalDateTime
+    enfant_id : String
+  # organization_id : String
+    parent_id : String
+    relation : String
+}
+entity "parents" <<école>> {
+  * id : String
+    adresse : String
+    created_at : LocalDateTime
+    email : String
+    nom : String
+  # organization_id : String
+    prenom : String
+    profession : String
+    telephone : String
+    updated_at : LocalDateTime
+    user_id : String
+}
+entity "users" <<autre module>> #EEEEEE
+"parent_appointments" }o..|| "parents" : parent_id (déduit)
+"parent_enfant" }o..|| "parents" : parent_id (déduit)
+"parents" }o..|| "users" : user_id (déduit)
+@enduml

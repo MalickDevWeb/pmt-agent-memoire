@@ -1,0 +1,52 @@
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+\markboth{Introduction générale}{Introduction générale}
+% Carte MEM-04 (2026-11-09) — BROUILLON rédigé avec l'assistance de l'Agent 09 (IA), déclaré dans
+% annexes/journal-ia.tex. Les étudiants restent auteurs : relire, corriger, compléter les repères
+% « À COMPLÉTER PAR L'ÉTUDIANT ». Chaque affirmation technique renvoie à un fichier du dépôt.
+
+\section*{Contexte et intérêt du sujet}
+
+\textbf{[À COMPLÉTER PAR L'ÉTUDIANT : contexte personnel, cadre du stage ou du projet de fin de formation, motivation pour le sujet, et problème observé sur le terrain (établissement, pratiques actuelles de gestion, outils utilisés). Le problème « observé » doit s'appuyer sur le recueil réel présenté au chapitre~2.]}
+
+Le projet École~221 vise une plateforme logicielle de gestion d'établissements scolaires, de type ERP (\emph{Enterprise Resource Planning}). Les spécifications la définissent comme une plateforme SaaS éducative \emph{multi-tenant}, destinée aux établissements d'enseignement secondaire et supérieur d'Afrique de l'Ouest\footnote{\nolinkurl{docs/requirements.md}, section~1 « Contexte \& Problématique Métier ».}. Une seule instance de l'application sert plusieurs écoles. Chaque école doit pourtant voir uniquement ses propres données. Les acteurs visés sont le super-administrateur de la plateforme, l'administration de chaque établissement, les professeurs, les étudiants, les parents et le personnel de sécurité du campus\footnote{\nolinkurl{docs/requirements.md}, section~1, liste « Acteurs Cibles ».}.
+
+Le sujet présente un double intérêt. Le premier est métier : il s'agit de réunir dans un même outil la scolarité, la pédagogie, les emplois du temps, les finances et le contrôle d'accès au campus\footnote{\nolinkurl{docs/requirements.md}, section~2 « Périmètre », points 1 à 7.}. Le second est méthodologique. J'ai mené une partie du développement avec une équipe d'agents d'intelligence artificielle, encadrée par des règles inscrites dans le code et par la validation d'un humain\footnote{\nolinkurl{orchestration/agent_runtime.py}, lignes 7 à 14 (règles imposées par le moteur des agents).}. Ce second aspect fait l'objet de la section~8.5.
+
+\section*{Problématique}
+
+La difficulté centrale tient à l'isolation des données. Les spécifications classent comme « critique » la règle selon laquelle chaque enregistrement lié à une école porte l'identifiant de son établissement\footnote{\nolinkurl{docs/requirements.md}, section~4, règle BR-01.}. Une seule erreur de filtrage exposerait les notes, les paiements ou les absences d'élèves à une autre école. À cette exigence s'ajoute une question de méthode : comment profiter de l'assistance d'agents d'IA sans perdre la maîtrise de ce qui est produit ?
+
+Je formule donc la question centrale suivante \textbf{[proposition à valider par l'étudiant et l'encadreur]} :
+
+\begin{quote}
+\emph{Comment concevoir et réaliser une plateforme de gestion scolaire multi-écoles qui garantisse l'isolation des données de chaque établissement, en encadrant l'usage d'agents d'IA dans son développement de façon traçable et sous contrôle humain ?}
+\end{quote}
+
+\section*{Objectifs}
+
+L'objectif général est de livrer une version fonctionnelle et vérifiée de la plateforme École~221, accompagnée d'un pipeline de développement agentique dont chaque action est contrôlée et journalisée.
+
+Les objectifs spécifiques sont formulés pour être évalués au chapitre~7. Chacun est relié à une exigence du dépôt :
+\begin{enumerate}
+  \item authentifier les utilisateurs et leur donner accès aux seules ressources de leur rôle (US-01)\footnote{\nolinkurl{docs/requirements.md}, section~3, US-01.} ;
+  \item permettre l'inscription autonome d'un nouvel établissement (US-02) ;
+  \item garantir qu'un administrateur ne voit que les données de sa propre école (US-03, BR-01)\footnote{\nolinkurl{docs/requirements.md}, section~3, US-03, et section~4, BR-01.} ;
+  \item respecter les règles métier de sécurité et d'intégrité : mots de passe hachés, notes bornées, journal d'audit (BR-03 à BR-05) ;
+  \item mettre en place un pipeline d'agents d'IA aux droits limités, dont les livraisons sont contrôlées par un agent superviseur puis validées par un humain.
+\end{enumerate}
+Un objectif est considéré comme atteint uniquement s'il est appuyé par un test exécuté et une preuve datée. La correspondance est donnée dans la matrice de traçabilité en annexe.
+
+\section*{Périmètre et démarche}
+
+Le périmètre fonctionnel est celui des spécifications validées : multi-écoles, authentification et contrôle des accès par rôle, gestion académique, planification, finances, contrôle d'accès au campus par badge QR et messagerie en temps réel\footnote{\nolinkurl{docs/requirements.md}, section~2, « Dans le périmètre ».}. Le paiement en cryptomonnaie et la reconnaissance faciale en sont explicitement exclus\footnote{\nolinkurl{docs/requirements.md}, section~2, « Hors périmètre ».}. Sur le plan technique, l'architecture retenue associe un backend Spring Boot~3, organisé en architecture hexagonale, à un frontend React~18 découpé par domaine métier\footnote{\nolinkurl{docs/architecture.md}, ADR-01 et ADR-02.}.
+
+\textbf{[À COMPLÉTER PAR L'ÉTUDIANT : préciser la partie du périmètre réellement couverte par la version présentée au jury, la durée du projet et la répartition du travail au sein du groupe.]}
+
+Ma démarche a suivi le cycle de vie du logiciel. J'ai d'abord analysé les besoins, puis conçu la solution, avant de la réaliser, de la tester et de préparer son déploiement. Le pipeline agentique a accompagné ces étapes : des agents spécialisés rédigent des propositions, un agent superviseur les contrôle, et le Tech Lead humain décide\footnote{\nolinkurl{agents/00_supervisor.md}, lignes 5 à 9.}.
+
+Dans tout le mémoire, je distingue les résultats \emph{attendus} des résultats \emph{effectivement obtenus}. Chaque élément technique porte l'une de trois étiquettes : \textbf{Réalisé}, quand une preuve d'exécution existe ; \textbf{Partiel} ; ou \textbf{Prévu}, pour ce qui est seulement conçu. À titre d'exemple, à la date de rédaction, le dépôt ne contient aucun fichier de pipeline d'intégration continue\footnote{Constat du 2026-11-09 : le dossier \nolinkurl{.github/} ne contient que \nolinkurl{modernize/}, et les dépôts \nolinkurl{backend/} et \nolinkurl{frontend/} n'ont pas de dossier \nolinkurl{.github/}.}. Ce pipeline est donc présenté comme \textbf{Prévu}. Le pipeline agentique est, lui, \textbf{partiellement réalisé} (section~8.5).
+
+\section*{Plan du mémoire}
+
+Le mémoire comprend trois parties et huit chapitres. La première partie, consacrée à l'étude préalable, présente le cadre du projet et le contexte d'étude (chapitre~1), puis l'analyse des besoins et les spécifications (chapitre~2). La deuxième partie porte sur la conception de la solution. Elle traite de la gestion du projet et des choix méthodologiques (chapitre~3), de la conception fonctionnelle et technique du système (chapitre~4) et du coût du projet (chapitre~5). La troisième partie décrit la mise en œuvre : réalisation et développement (chapitre~6), tests et validation (chapitre~7), puis déploiement, intégration continue et pipeline agentique (chapitre~8). La conclusion générale répond à la question centrale à partir des résultats obtenus. Les annexes réunissent la déclaration et le journal d'usage de l'IA, la matrice de traçabilité des exigences et le suivi de la prélecture.

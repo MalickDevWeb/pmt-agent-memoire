@@ -1,0 +1,63 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module planning (tel que construit)
+skinparam classAttributeIconSize 0
+class Classe {
+  id : String
+  name : String
+  code : String
+  filiereId : String
+  level : String
+  capacity : int
+  currentSize : int
+  + addStudent()
+  + hasAvailableSeats()
+  + removeStudent()
+  + updateCode()
+  + updateName()
+}
+class ClasseFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Filiere {
+  id : String
+  name : String
+  code : String
+  description : String
+  level : String
+  + updateCode()
+  + updateDescription()
+  + updateName()
+}
+class FiliereFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Room {
+  id : String
+  name : String
+  capacity : int
+  equipment : String
+  location : String
+  + hasEquipment()
+  + updateEquipment()
+  + updateName()
+}
+class RoomFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class Slot {
+  id : String
+  startTime : String
+  endTime : String
+  dayOfWeek : String
+  type : SlotType
+  + updateType()
+}
+class SlotFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

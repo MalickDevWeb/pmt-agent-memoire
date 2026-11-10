@@ -1,0 +1,110 @@
+\chapter{Conception fonctionnelle et technique du système}
+
+\section{Introduction}
+
+La conception de la plateforme École~221 a été pensée pour répondre à une double contrainte : d'une part, la diversité des besoins fonctionnels inhérents à la vie scolaire (pédagogie, planification, comptabilité, sécurité physique des campus) ; d'autre part, les impératifs stricts de sécurité liés à une architecture mutualisée (\emph{multi-tenant}), où plusieurs établissements partagent une même infrastructure logicielle tout en exigeant une confidentialité absolue de leurs données respectives.
+
+\section{Conception fonctionnelle}
+
+\subsection{Parcours utilisateurs et profils d'accès}
+
+Le système s'articule autour de six espaces applicatifs dédiés, accessibles selon le profil de l'utilisateur authentifié :
+\begin{enumerate}
+    \item \textbf{Espace Super-Administrateur} : supervision globale de la plateforme, gestion des contrats d'abonnements des écoles (offres Standard, Pro, Entreprise), quotas d'effectifs (étudiants, professeurs, classes) et activation des fonctionnalités avancées (tuteur IA, visioconférence).
+    \item \textbf{Espace Administration d'école} : gestion des filières, départements, niveaux académiques, affectation des enseignants aux cours, publication des emplois du temps et suivi du recouvrement des frais scolaires.
+    \item \textbf{Espace Enseignant (Professeur)} : saisie des évaluations et devoirs, enregistrement des notes de contrôle continu (CC) et d'examen, gestion des présences et animation de classes virtuelles.
+    \item \textbf{Espace Étudiant} : consultation du relevé de notes avec moyennes et mentions officielles, accès au planning de cours, remise électronique des devoirs et génération du badge numérique d'accès doté d'un QR code dynamique.
+    \item \textbf{Espace Parent} : suivi de la progression académique des enfants rattachés, consultation en direct des retards et absences, réception des bulletins et prise de rendez-vous avec le corps enseignant.
+    \item \textbf{Espace Vigile (Sécurité du campus)} : terminal de scan des badges étudiants et personnels aux postes d'accès (portail principal, internat, bibliothèque), vérification en temps réel du statut d'autorisation et journalisation des flux de passage.
+\end{enumerate}
+
+\subsection{Règles métier fondamentales}
+
+Les règles métier documentées dans \nolinkurl{docs/requirements.md} garantissent la conformité réglementaire de la scolarité :
+\begin{itemize}
+    \item \textbf{Règle BR-01 (Isolation des écoles)} : chaque enregistrement en base de données (élève, note, paiement, créneau) est strictement assujetti à la clé primaire de l'établissement auquel il appartient.
+    \item \textbf{Règle BR-02 (Contrôle d'accès)} : tout badge présenté à une borne vigile doit correspondre à un élève inscrit, actif et non suspendu par l'administration.
+    \item \textbf{Règle BR-03 (Notes et barème)} : les notes sont bornées dans l'intervalle $[0 ; 20]$ avec un coefficient entier strictement positif. Les moyennes semestrielles appliquent un arrondi arithmétique rigoureux à deux décimales.
+    \item \textbf{Règle BR-04 (Paiements et attestations)} : aucune attestation de scolarité officielle ou bulletin certifié n'est délivré si les droits d'inscription annuels ne sont pas régularisés.
+\end{itemize}
+
+\section{Modélisation architecturale}
+
+\subsection{Découpage modulaire en Architecture Hexagonale}
+
+Afin d'isoler la logique métier des contraintes techniques et des frameworks externes, le backend Spring Boot adopte le paradigme de l'\emph{Architecture Hexagonale} (Ports et Adaptateurs), tel qu'illustré par la structure du code :
+\begin{itemize}
+    \item \textbf{Noyau de Domaine (\texttt{domain})} : contient les entités pures, les objets valeurs (\emph{Value Objects}) et les règles métier, sans aucune dépendance vers Spring ou la base de données.
+    \item \textbf{Ports (\texttt{ports/in} et \texttt{ports/out})} : interfaces définissant les contrats des cas d'utilisation (\emph{Use Cases}) et les opérations d'accès aux ressources externes (dépôts de données, passerelles de messagerie).
+    \item \textbf{Adaptateurs d'Infrastructure (\texttt{infrastructure})} : implémentations concrètes des ports, réparties en adaptateurs primaires (contrôleurs REST Spring Web, consommateurs WebSocket) et adaptateurs secondaires (entités JPA/Hibernate, stockage Cloudinary, connecteurs Redis).
+\end{itemize}
+
+\subsection{Cinématique d'authentification et isolation multi-tenant}
+
+La figure~\ref{fig:auth-seq} synthétise le flux d'authentification sécurisé et l'étanchéité assurée lors de chaque requête client.
+
+\begin{figure}[h]
+\centering
+\small
+\begin{verbatim}
+Navigateur (React)            API Gateway / Filter             Spring Backend / DB
+        |                               |                                |
+        |--- 1. POST /api/auth/login -->|                                |
+        |    (email, password)          |--- 2. Vérification BCrypt ---->|
+        |<-- 3. Jeton JWT sécurisé -----|    (génération claims + école) |
+        |                               |                                |
+        |--- 4. GET /api/student/notes -|                                |
+        |    Header: Bearer <JWT>       |--- 5. TenantMembershipInterceptor
+        |    Header: X-Tenant-Slug      |    Vérification appartenance   |
+        |                               |    école ciblée == école token |
+        |                               |    (Si non concordance -> 403) |
+        |                               |--- 6. Requête SQL partitionnée |
+        |                               |       WHERE tenant_id = ?      |
+        |<-- 7. Données réelles isolées-|                                |
+\end{verbatim}
+\caption{Cinématique de sécurisation des requêtes et cloisonnement multi-tenant}
+\label{fig:auth-seq}
+\end{figure}
+
+\section{Sécurité et robustesse de l'exploitation}
+
+\subsection{Politique de cloisonnement des données (SEC-003)}
+
+Le risque majeur d'une architecture mutualisée étant l'accès croisé non autorisé entre établissements, nous avons instauré un double verrouillage :
+\begin{enumerate}
+    \item \textbf{Interdiction formelle de l'en-tête \texttt{X-Tenant-Id} côté client} : le navigateur n'envoie jamais l'identifiant technique de l'école. Il communique uniquement le slug textuel public (\texttt{X-Tenant-Slug}), garantissant que le client ne peut usurper un identifiant d'établissement.
+    \item \textbf{Intercepteur de contrôle d'appartenance (\texttt{TenantMembershipInterceptor})} : à chaque requête, le serveur confronte l'école résolue depuis l'URL avec la liste des écoles auxquelles l'utilisateur appartient légitimement selon son compte authentifié. En cas de disparité, la requête est immédiatement rejetée avec le code HTTP \texttt{403 Forbidden}.
+\end{enumerate}
+
+\subsection{Gestion des secrets et durcissement des interfaces}
+
+Plusieurs vulnérabilités potentielles ont été éliminées lors du durcissement du système :
+\begin{itemize}
+    \item \textbf{Sécurisation de la signature JWT} : le secret de signature \texttt{JWT\_SECRET} est obligatoirement fourni via l'environnement sous forme d'une clé cryptographique de 256 bits, interdisant le démarrage du serveur en présence d'une valeur par défaut faible.
+    \item \textbf{Verrouillage des endpoints sensibles} : l'accès public à l'API de diagnostic \nolinkurl{/admissions/db} a été clôturé (décision APP-TL-10), restreignant ces opérations aux seuls administrateurs habilités.
+    \item \textbf{Politique CORS sélective} : suppression des en-têtes permissifs \texttt{@CrossOrigin("*")} au profit d'une liste blanche d'origines autorisées (\texttt{CORS\_ALLOWED\_ORIGINS}).
+\end{itemize}
+
+\section{Choix techniques et justifications}
+
+Le tableau~\ref{tab:choix-technologiques} présente la pile technologique retenue ainsi que les critères comparatifs ayant motivé chaque sélection.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llp{7cm}}
+\toprule
+\textbf{Couche} & \textbf{Technologie \& Version} & \textbf{Justification du choix technique} \\
+\midrule
+Backend & Java 21 LTS / Spring Boot 3 & Typage fort, performances de la JVM moderne, maturité de Spring Security pour le RBAC et écosystème JPA pérenne. \\
+Persistance & PostgreSQL 15 & Moteur relationnel robuste avec support du partitionnement, transactions ACID strictes et extensions multi-tenancy. \\
+Frontend & React 18 / TypeScript 5 & Interface réactive basée sur des composants typés, prévention des erreurs d'exécution grâce à la compilation \texttt{tsc}. \\
+Outillage UI & Tailwind CSS / Vite 7 & Compilation ultra-rapide (HMR), styles utilitaires garantissant la cohérence du Design System sans dérive CSS. \\
+Formulaires & React Hook Form + Zod & Validation de schéma déclarative, élimination des états de re-rendu inutiles et typage strict des données saisies. \\
+Gestion d'état & TanStack React Query v5 & Mise en cache intelligente des requêtes d'API, déduplication des appels réseau et invalidation granulaire. \\
+Conteneurisation & Docker \& Compose & Environnement d'exécution unifié entre le poste de travail et les serveurs d'intégration continue. \\
+\bottomrule
+\end{tabular}
+\caption{Pile technologique retenue et critères de sélection}
+\label{tab:choix-technologiques}
+\end{table}

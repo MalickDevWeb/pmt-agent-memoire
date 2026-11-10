@@ -1,0 +1,32 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module auth (tel que construit)
+skinparam classAttributeIconSize 0
+class User {
+  id : String
+  nom : String
+  prenom : String
+  email : String
+  password : String
+  matricule : String
+  globalRole : RoleUtilisateur
+  photoUrl : String
+  telephone : String
+  emailVerified : Boolean
+  phoneVerified : Boolean
+  lastLoginAt : LocalDateTime
+  language : String
+  timezone : String
+  + addTenantProfile()
+  + changePassword()
+  + recordLogin()
+  + updateProfile()
+  + verifyEmail()
+  + verifyPhone()
+}
+class UserFactory {
+  {static} + create()
+  {static} + reconstruct()
+  {static} + reconstructSimple()
+}
+@enduml

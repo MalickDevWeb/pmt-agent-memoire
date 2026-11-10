@@ -1,0 +1,173 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module collaboration (tel que construit)
+skinparam classAttributeIconSize 0
+class AccessControl {
+  id : String
+  resourceId : String
+  resourceType : String
+  userId : String
+  permissions : Set<Permission>
+  grantedAt : LocalDateTime
+  revokedAt : LocalDateTime
+  grantedBy : String
+  + canDelete()
+  + canHostMeet()
+  + canJoinMeet()
+  + canManageParticipants()
+  + canSendMessages()
+  + canViewMessages()
+  + grantPermission()
+  + hasAllPermissions()
+  + hasAnyPermission()
+  + hasPermission()
+  + revoke()
+  + revokePermission()
+}
+class AccessControlFactory {
+  {static} + createMember()
+  {static} + createOwner()
+  {static} + createViewer()
+  {static} + createWithCustomPermissions()
+  {static} + reconstitute()
+}
+class GroupChat {
+  id : String
+  name : String
+  description : String
+  avatarUrl : String
+  creatorId : String
+  chatType : GroupChatType
+  participantIds : Set<String>
+  adminIds : Set<String>
+  lastMessageTime : LocalDateTime
+  createdAt : LocalDateTime
+  muted : boolean
+  mutedUntil : LocalDateTime
+  archived : boolean
+  pinnedMessageId : String
+  maxParticipants : int
+  + addAdmin()
+  + addParticipant()
+  + archive()
+  + canUserManage()
+  + canUserPost()
+  + hasCapacity()
+  + mute()
+  + pinMessage()
+  + removeAdmin()
+  + removeParticipant()
+  + unarchive()
+  + unmute()
+  + unpinMessage()
+  + updateAvatar()
+  + updateDescription()
+  + updateLastMessageTime()
+  + updateName()
+}
+class GroupChatFactory {
+  {static} + createBroadcast()
+  {static} + createChannel()
+  {static} + createGroup()
+  {static} + createGroupWithAvatar()
+  {static} + createGroupWithCapacity()
+  {static} + createIndividualChat()
+  {static} + reconstitute()
+}
+class Meet {
+  id : String
+  title : String
+  description : String
+  organizerId : String
+  meetingLink : String
+  scheduledTime : LocalDateTime
+  status : MeetStatus
+  participantIds : Set<String>
+  createdAt : LocalDateTime
+  endedAt : LocalDateTime
+  maxParticipants : int
+  + addParticipant()
+  + cancel()
+  + end()
+  + hasCapacity()
+  + removeParticipant()
+  + reschedule()
+  + start()
+  + updateMeetingLink()
+}
+class MeetFactory {
+  {static} + create()
+  {static} + createInstant()
+  {static} + createWithCapacity()
+  {static} + createWithLink()
+  {static} + reconstitute()
+}
+class Message {
+  id : String
+  groupId : String
+  senderId : String
+  content : String
+  messageType : MessageType
+  status : MessageStatus
+  timestamp : LocalDateTime
+  mediaUrl : String
+  duration : Long
+  + hasMedia()
+  + markAsDelivered()
+  + markAsFailed()
+  + markAsRead()
+  + updateContent()
+}
+class MessageFactory {
+  {static} + createAudioMessage()
+  {static} + createFileMessage()
+  {static} + createForwardedMessage()
+  {static} + createGroupCreatedMessage()
+  {static} + createGroupNameChangedMessage()
+  {static} + createImageMessage()
+  {static} + createMemberJoinedMessage()
+  {static} + createMemberLeftMessage()
+  {static} + createReplyMessage()
+  {static} + createSystemMessage()
+  {static} + createTextMessage()
+  {static} + createVideoMessage()
+  {static} + reconstitute()
+}
+class Task {
+  id : String
+  title : String
+  description : String
+  workgroupId : String
+  assigneeId : String
+  status : TaskStatus
+  priority : TaskPriority
+  + assignTo()
+  + markAsCancelled()
+  + markAsDone()
+  + markAsInProgress()
+  + markAsTodo()
+  + updateDescription()
+  + updateTitle()
+}
+class TaskFactory {
+  {static} + create()
+  {static} + createTask()
+  {static} + reconstruct()
+}
+class Workgroup {
+  id : String
+  name : String
+  description : String
+  creatorId : String
+  memberCount : int
+  + addMember()
+  + hasMembers()
+  + removeMember()
+  + updateDescription()
+  + updateName()
+}
+class WorkgroupFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

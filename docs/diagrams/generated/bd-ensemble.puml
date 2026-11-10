@@ -1,0 +1,162 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — vue d'ensemble (56 tables)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "activity_logs" <<école>> {
+}
+entity "admission_settings" <<école>> {
+}
+entity "attendances" <<école>> {
+}
+entity "audit_logs" <<école>> {
+}
+entity "candidates" <<école>> {
+}
+entity "classes" <<école>> {
+}
+entity "course_details" <<école>> {
+}
+entity "courses" <<école>> {
+}
+entity "dashboard_alerts" <<école>> {
+}
+entity "dashboard_kpis" <<école>> {
+}
+entity "documents" <<école>> {
+}
+entity "entitlements" {
+}
+entity "expenses" <<école>> {
+}
+entity "filieres" <<école>> {
+}
+entity "grades" <<école>> {
+}
+entity "group_chats" <<école>> {
+}
+entity "homeworks" <<école>> {
+}
+entity "lessons" <<école>> {
+}
+entity "live_chat_messages" <<école>> {
+}
+entity "meets" <<école>> {
+}
+entity "messages" <<école>> {
+}
+entity "messages" <<école>> {
+}
+entity "modules" <<école>> {
+}
+entity "notification_templates" <<école>> {
+}
+entity "notifications" <<école>> {
+}
+entity "organization_branding" {
+}
+entity "organization_features" {
+}
+entity "organization_settings" {
+}
+entity "organization_users" {
+}
+entity "organizations" {
+}
+entity "parent_appointments" <<école>> {
+}
+entity "parent_enfant" <<école>> {
+}
+entity "parents" <<école>> {
+}
+entity "permissions" {
+}
+entity "plans" {
+}
+entity "quizzes" <<école>> {
+}
+entity "reference_values" {
+}
+entity "regional_stats" <<école>> {
+}
+entity "reminders" <<école>> {
+}
+entity "role_permissions" {
+}
+entity "roles" <<école>> {
+}
+entity "rooms" <<école>> {
+}
+entity "schedule_sessions" <<école>> {
+}
+entity "security_events" <<école>> {
+}
+entity "slots" <<école>> {
+}
+entity "student_courses" <<école>> {
+}
+entity "student_data" <<école>> {
+}
+entity "student_finances" <<école>> {
+}
+entity "student_grades" <<école>> {
+}
+entity "student_homeworks" <<école>> {
+}
+entity "subscriptions" {
+}
+entity "tasks" <<école>> {
+}
+entity "transactions" <<école>> {
+}
+entity "users" {
+}
+entity "vigil_profiles" <<école>> {
+}
+entity "workgroups" <<école>> {
+}
+"activity_logs" }o..|| "users" : user_id (déduit)
+"attendances" }o..|| "users" : student_id (déduit)
+"attendances" }o..|| "courses" : course_id (déduit)
+"classes" }o..|| "filieres" : filiere_id (déduit)
+"course_details" }o..|| "courses" : course_id (déduit)
+"courses" }o..|| "users" : prof_id (déduit)
+"entitlements" }o..|| "plans" : plan_id (déduit)
+"grades" }o..|| "users" : student_id (déduit)
+"grades" }o..|| "courses" : course_id (déduit)
+"group_chats" }o..|| "users" : user_id (déduit)
+"group_chats" }o..|| "messages" : pinned_message_id (déduit)
+"homeworks" }o..|| "courses" : course_id (déduit)
+"lessons" }o..|| "courses" : course_id (déduit)
+"live_chat_messages" }o..|| "users" : user_id (déduit)
+"messages" }o..|| "users" : sender_id (déduit)
+"modules" }o..|| "courses" : course_id (déduit)
+"notifications" }o..|| "users" : recipient_id (déduit)
+"organization_users" }o..|| "users" : user_id (déduit)
+"organization_users" }o..|| "roles" : role_id (déduit)
+"organizations" }o..|| "subscriptions" : subscription_id (déduit)
+"parent_appointments" }o..|| "parents" : parent_id (déduit)
+"parent_enfant" }o..|| "parents" : parent_id (déduit)
+"parents" }o..|| "users" : user_id (déduit)
+"quizzes" }o..|| "courses" : course_id (déduit)
+"reminders" }o..|| "courses" : course_id (déduit)
+"reminders" }o..|| "users" : professor_id (déduit)
+"role_permissions" }o..|| "roles" : role_id (déduit)
+"role_permissions" }o..|| "permissions" : permission_id (déduit)
+"schedule_sessions" }o..|| "courses" : course_id (déduit)
+"schedule_sessions" }o..|| "users" : professor_id (déduit)
+"student_courses" }o..|| "users" : student_id (déduit)
+"student_courses" }o..|| "courses" : course_id (déduit)
+"student_data" }o..|| "users" : student_id (déduit)
+"student_finances" }o..|| "users" : student_id (déduit)
+"student_grades" }o..|| "users" : student_id (déduit)
+"student_homeworks" }o..|| "users" : student_id (déduit)
+"student_homeworks" }o..|| "courses" : course_id (déduit)
+"subscriptions" }o..|| "plans" : plan_id (déduit)
+"transactions" }o..|| "student_finances" : student_finance_id (déduit)
+"transactions" }o..|| "users" : student_id (déduit)
+@enduml

@@ -1,0 +1,27 @@
+{
+  "_lisez_moi": "Organisation de l'équipe d'agents. Modifiable par le Tech Lead uniquement (fichier de gouvernance). Heures au fuseau indiqué.",
+  "fuseau": "Africa/Dakar",
+  "horaires_par_defaut": {"jours": ["lun", "mar", "mer", "jeu", "ven"], "debut": "08:00", "fin": "18:00"},
+  "budget_jour_par_defaut": 3.0,
+  "agents": {
+    "00": {"nom": "Kasongo", "horaires": {"jours": ["lun", "mar", "mer", "jeu", "ven", "sam"], "debut": "08:00", "fin": "19:00"}, "budget_jour": 2.0},
+    "01": {"nom": "Mame Diarra"},
+    "02": {"nom": "Cheikh Tidiane Diop"},
+    "03": {"nom": "Ousmane Marra", "budget_jour": 5.0},
+    "04": {"nom": "Abdoulaye", "budget_jour": 5.0},
+    "05": {"nom": "Aïssatou Ba"},
+    "06": {"nom": "Moussa Diallo"},
+    "07": {"nom": "Fallou Ndiaye"},
+    "08": {"nom": "Khady Sarr", "horaires": {"jours": ["lun", "mar", "mer", "jeu"], "debut": "09:00", "fin": "17:00"}, "budget_jour": 1.0},
+    "09": {"nom": "Ndèye Fatou Fall"},
+    "10": {"nom": "Ibrahima Guèye"},
+    "11": {"nom": "Seynabou Cissé"}
+  },
+  "convocation": {
+    "_lisez_moi": "Agent jugé « À REPRENDRE » par Kasongo : convocation (explication + correction), au plus max_tentatives fois ; ensuite un remplaçant (nouvelle instance du même rôle, sans l'historique de ses erreurs, réflexion plus poussée) ; s'il échoue aussi : ESCALADE au Tech Lead.",
+    "max_tentatives": 2,
+    "budget_par_tentative": 1.0,
+    "budget_kasongo": 0.5,
+    "effort_remplacant": "high"
+  }
+}

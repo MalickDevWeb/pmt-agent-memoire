@@ -1,0 +1,33 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module audit (tel que construit)
+skinparam classAttributeIconSize 0
+class AuditLog {
+  id : String
+  userId : String
+  action : String
+  description : String
+  timestamp : LocalDateTime
+  ipAddress : String
+  userAgent : String
+  + updateDescription()
+}
+class AuditLogFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class SecurityEvent {
+  id : String
+  eventType : String
+  userId : String
+  description : String
+  severity : SeverityLevel
+  timestamp : LocalDateTime
+  sourceIp : String
+  + updateDescription()
+}
+class SecurityEventFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

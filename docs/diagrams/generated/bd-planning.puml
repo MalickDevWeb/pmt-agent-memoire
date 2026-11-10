@@ -1,0 +1,50 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module planning (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "classes" <<école>> {
+  * id : String
+    capacity : int
+    code : String
+    current_size : int
+    filiere_id : String
+    level : String
+    name : String
+    niveau : String
+    nom : String
+  # organization_id : String
+}
+entity "filieres" <<école>> {
+  * id : String
+    code : String
+    description : String
+    level : String
+    name : String
+    nom : String
+  # organization_id : String
+}
+entity "rooms" <<école>> {
+  * id : String
+    capacite : Integer
+    capacity : int
+    equipment : String
+    location : String
+    name : String
+    nom : String
+  # organization_id : String
+}
+entity "slots" <<école>> {
+  * id : String
+    day_of_week : String
+    end_time : String
+  # organization_id : String
+    start_time : String
+    type : String
+}
+"classes" }o..|| "filieres" : filiere_id (déduit)
+@enduml

@@ -1,0 +1,97 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module student (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "attendances" <<école>> {
+  * id : String
+    course_id : String
+    date : String
+  # organization_id : String
+    status : String
+    student_id : String
+    student_name : String
+}
+entity "course_details" <<école>> {
+  * course_id : String
+    data : Map<String, Object>
+  # organization_id : String
+}
+entity "live_chat_messages" <<école>> {
+  * id : String
+    created_at : LocalDateTime
+  # organization_id : String
+    session_id : String
+    text : String
+    timestamp : LocalDateTime
+    user_id : String
+    user_name : String
+    user_role : String
+}
+entity "student_courses" <<école>> {
+  * id : String
+    coefficient : int
+    course_id : String
+    created_at : LocalDateTime
+  # organization_id : String
+    progress : int
+    semester : String
+    statut : String
+    student_id : String
+    titre : String
+    updated_at : LocalDateTime
+}
+entity "student_data" <<école>> {
+  * student_id : String
+    courses : List<Map<String, Object>>
+    dashboard : Map<String, Object>
+    grades : List<Map<String, Object>>
+  # organization_id : String
+    profile : Map<String, Object>
+}
+entity "student_grades" <<école>> {
+  * id : String
+    cc_grade : double
+    created_at : LocalDateTime
+    ects : int
+    exam_grade : double
+    module : String
+  # organization_id : String
+    professor : String
+    promo_average : double
+    semester : String
+    student_id : String
+    updated_at : LocalDateTime
+}
+entity "student_homeworks" <<école>> {
+  * id : String
+    course_id : String
+    created_at : LocalDateTime
+    deadline : LocalDateTime
+    file_name : String
+  # organization_id : String
+    priority : String
+    progress : int
+    statut : String
+    student_id : String
+    submitted_at : LocalDateTime
+    titre : String
+    updated_at : LocalDateTime
+}
+entity "courses" <<autre module>> #EEEEEE
+entity "users" <<autre module>> #EEEEEE
+"attendances" }o..|| "users" : student_id (déduit)
+"attendances" }o..|| "courses" : course_id (déduit)
+"course_details" }o..|| "courses" : course_id (déduit)
+"live_chat_messages" }o..|| "users" : user_id (déduit)
+"student_courses" }o..|| "users" : student_id (déduit)
+"student_courses" }o..|| "courses" : course_id (déduit)
+"student_data" }o..|| "users" : student_id (déduit)
+"student_grades" }o..|| "users" : student_id (déduit)
+"student_homeworks" }o..|| "users" : student_id (déduit)
+"student_homeworks" }o..|| "courses" : course_id (déduit)
+@enduml

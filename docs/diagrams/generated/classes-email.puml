@@ -1,0 +1,17 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module email (tel que construit)
+skinparam classAttributeIconSize 0
+class EmailRequest {
+  to : String
+  subject : String
+  content : String
+  format : EmailFormat
+  metadata : Map<String, Object>
+  + hasMetadata()
+}
+class EmailRequestFactory {
+  {static} + create()
+  {static} + createHtml()
+}
+@enduml

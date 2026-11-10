@@ -1,0 +1,126 @@
+% Habillage graphique du mémoire, d'après les visuels fournis par l'étudiant.
+%   - toutes les pages : images/fond-page.jpg (cadre, drapeau, ville, globe) + numéro dans le médaillon ;
+%   - chapitres : bandeau doré (images/bandeau-titre.png) « Chapitre I : Titre » ou « CONCLUSION GÉNÉRALE » ;
+%   - sections : pastille rouge bordée d'or « Section 1 : Titre » ; sous-sections : « I. Titre » ;
+%   - \partiepage{PREMIÈRE PARTIE}{ÉTUDE PRÉALABLE} : page de partie (images/fond-partie.jpg) ;
+%   - \sommaire : parties et chapitres du corps du mémoire.
+% Les fonds sont les visuels d'origine dont le texte a été effacé ; le texte est composé ici.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style-e221}[2026/11/09 Habillage E221]
+\RequirePackage{tgtermes}
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.misc}
+\RequirePackage{xcolor}
+\RequirePackage{eso-pic}
+\RequirePackage{titlesec}
+\RequirePackage{enumitem}
+\RequirePackage{pict2e}
+\RequirePackage{geometry}
+\geometry{a4paper,top=27mm,bottom=46mm,left=22mm,right=22mm,headheight=0pt,headsep=0pt,footskip=0pt}
+
+\definecolor{e221rouge}{HTML}{8B0D12}
+\definecolor{e221rougeclair}{HTML}{C0141B}
+\definecolor{e221or}{HTML}{D4A72C}
+\newcommand{\eserif}{\fontfamily{qtm}\selectfont}
+
+% Texte ajusté à une largeur maximale (réduit seulement s'il est trop long)
+\newsavebox{\e@box}
+\newcommand{\e@fit}[2]{\sbox{\e@box}{#2}%
+  \ifdim\wd\e@box>#1\resizebox{#1}{!}{\usebox{\e@box}}\else\usebox{\e@box}\fi}
+
+% ---------------------------------------------------------------- fond et numéro de page
+\pagestyle{empty}
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{\includegraphics[width=\paperwidth,height=\paperheight]{images/fond-page.jpg}}%
+  \AtPageLowerLeft{\put(\LenToUnit{105mm},\LenToUnit{11.3mm}){\makebox(0,0){\color{white}\eserif\bfseries\Large\thepage}}}}
+
+% ---------------------------------------------------------------- chapitres : bandeau doré
+\newcommand{\e@bandeau}[1]{%
+  \begin{tikzpicture}
+    \node[inner sep=0pt] (b) {\includegraphics[width=134mm]{images/bandeau-titre.png}};
+    \node[text=white, text width=112mm, align=center] at ([yshift=1.4mm]b.center)
+      {\eserif\bfseries\e@taille{#1}\hyphenchar\font=-1 #1};
+  \end{tikzpicture}}
+% taille du titre de chapitre : 21 pt sur une ligne, 16 pt (sur deux lignes) si le titre est long
+\newcommand{\e@taille}[1]{\sbox{\e@box}{\eserif\bfseries\fontsize{21}{25}\selectfont #1}%
+  \ifdim\wd\e@box>112mm\fontsize{16}{18.5}\selectfont\else\fontsize{21}{25}\selectfont\fi}
+\newcommand{\e@chapnum}[1]{\e@bandeau{\chaptertitlename\ \Roman{chapter} : #1}}
+% annexes : « Annexe A : … »
+\g@addto@macro\appendix{\renewcommand{\e@chapnum}[1]{\e@bandeau{\appendixname\ \Alph{chapter} : #1}}}
+\newcommand{\e@chapsans}[1]{\e@bandeau{\MakeUppercase{#1}}}
+\titleformat{\chapter}[block]{\filcenter}{}{0pt}{\e@chapnum}
+\titleformat{name=\chapter,numberless}[block]{\filcenter}{}{0pt}{\e@chapsans}
+\titlespacing*{\chapter}{0pt}{-9mm}{5mm}
+\assignpagestyle{\chapter}{empty}
+
+% ---------------------------------------------------------------- sections : pastilles rouges bordées d'or
+\newcommand{\e@pastille}[2]{% #1 = taille, #2 = texte
+  \tikz[baseline=(p.base)]\node[rounded rectangle, left color=e221rouge, right color=e221rougeclair,
+    draw=e221or, line width=1.8pt, inner xsep=12pt, inner ysep=5pt, text=white](p)
+    {\eserif\bfseries#1 #2};}
+\newcommand{\e@secnum}[1]{\e@pastille{\large}{Section \arabic{section} : #1}}
+\newcommand{\e@secsans}[1]{\e@pastille{\large}{#1}}
+\newcommand{\e@ssecnum}[1]{\e@pastille{\normalsize}{\Roman{subsection}.\quad #1}}
+\newcommand{\e@ssecsans}[1]{\e@pastille{\normalsize}{#1}}
+\titleformat{\section}[block]{\raggedright}{}{0pt}{\e@secnum}
+\titleformat{name=\section,numberless}[block]{\raggedright}{}{0pt}{\e@secsans}
+\titleformat{\subsection}[block]{\raggedright}{}{0pt}{\e@ssecnum}
+\titleformat{name=\subsection,numberless}[block]{\raggedright}{}{0pt}{\e@ssecsans}
+\titleformat{\subsubsection}[block]{\eserif\bfseries\color{e221rouge}}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{12pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{6pt}
+
+% ---------------------------------------------------------------- listes : pastilles numérotées
+% pastille numérotée sans TikZ (compatible avec le « ; » actif du français)
+\newcommand{\e@rond}[1]{\makebox[1.25em]{\begin{picture}(0,0)\put(0,3.6){\color{e221rougeclair}\circle*{12.5}}\end{picture}%
+  \textcolor{white}{\eserif\bfseries\footnotesize #1}}}
+\setlist[enumerate,1]{label=\e@rond{\arabic*}, leftmargin=2.6em, itemsep=2pt}
+\setlist[itemize,1]{label={\color{e221rougeclair}\large\textbullet}, leftmargin=2.2em, itemsep=2pt}
+
+% ---------------------------------------------------------------- page de partie
+\newcommand{\partiepage}[2]{%
+  \cleardoublepage\refstepcounter{part}%
+  \addcontentsline{toc}{part}{#1 : #2}%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[inner sep=0pt] at (current page.center)
+      {\includegraphics[width=\paperwidth,height=\paperheight]{images/fond-partie.jpg}};
+    \node[text=white] at ([yshift=-93.6mm]current page.north)
+      {\e@fit{150mm}{\eserif\bfseries\fontsize{50}{56}\selectfont #1}};
+    \node[text=black] at ([yshift=-139.6mm]current page.north)
+      {\e@fit{162mm}{\eserif\bfseries\fontsize{50}{56}\selectfont #2}};
+    \node[text=white] at ([yshift=-287.4mm]current page.north)
+      {\eserif\bfseries\small\thepage};
+  \end{tikzpicture}%
+  \clearpage}
+
+% ---------------------------------------------------------------- sommaire
+\newif\if@e@numerote
+\def\e@premier#1#2\@nil{#1}
+% seules les entrées paginées en chiffres arabes (corps du mémoire) figurent au sommaire
+\newcommand{\e@sipagearabe}[2]{\edef\e@p{\expandafter\e@premier#1\relax\@nil}%
+  \ifnum\expandafter`\e@p<58 \ifnum\expandafter`\e@p>47 #2\fi\fi}
+% numéro : chiffre → « Chapitre I », lettre (annexes) → « Annexe A »
+\def\e@etiquette#1#2\@nil{\ifnum`#1>64 Annexe #1#2\else Chapitre \uppercase\expandafter{\romannumeral#1#2}\fi}
+\newcommand{\e@romain}[1]{\expandafter\e@etiquette#1\@nil}
+\newcommand{\e@points}[1]{\nobreak\leaders\hbox to .55em{\hss.\hss}\hfill\nobreak
+  \hbox to 3em{\hfill\eserif\bfseries p.~#1}}
+\newcommand{\e@chapitre}[2]{\par\noindent
+  \global\@e@numerotefalse
+  \setbox0\hbox{\def\numberline##1{\global\@e@numerotetrue\gdef\e@num{##1}}#1}%
+  \if@e@numerote
+    \hspace*{1.6em}{\eserif\bfseries\itshape\makebox[2.9cm][l]{\e@romain{\e@num}\,:}}%
+    {\eserif\bfseries\itshape\def\numberline##1{}#1}%
+  \else
+    {\eserif\bfseries\MakeUppercase{#1}}%
+  \fi
+  \e@points{#2}\par\vskip 1pt}
+\newcommand{\e@entrees}{%
+  \renewcommand*{\l@part}[2]{\par\vskip 9pt\noindent
+    {\hypersetup{linkcolor=white}\e@pastille{\normalsize}{\MakeUppercase{##1}}}\e@points{##2}\par\vskip 4pt}%
+  \renewcommand*{\l@chapter}[2]{\e@sipagearabe{##2}{\e@chapitre{##1}{##2}}}}
+\newcommand{\sommaire}{%
+  \chapter*{Sommaire}%
+  \begingroup\setcounter{tocdepth}{0}\e@entrees\linespread{1.2}\selectfont\@starttoc{toc}\endgroup
+  \clearpage}
+\endinput

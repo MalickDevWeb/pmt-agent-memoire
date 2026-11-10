@@ -1,0 +1,62 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module platform-organization (tel que construit)
+skinparam classAttributeIconSize 0
+class Organization {
+  id : String
+  name : String
+  type : OrganizationType
+  status : OrganizationStatus
+  slug : String
+  country : String
+  city : String
+  address : String
+  phone : String
+  email : String
+  website : String
+  logo : String
+  subscriptionId : String
+  primaryDomainId : String
+  settings : Map<String, Object>
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+  validatedAt : LocalDateTime
+  suspendedAt : LocalDateTime
+  + archive()
+  + reactivate()
+  + suspend()
+  + unarchive()
+  + validate()
+}
+class OrganizationFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class OrganizationUser {
+  id : String
+  userId : String
+  organizationId : String
+  role : String
+  permissions : List<String>
+  scopeType : ScopeType
+  scopeId : String
+  status : MembershipStatus
+  joinedAt : LocalDateTime
+  expiresAt : LocalDateTime
+  isDelegated : Boolean
+  delegationId : String
+  + activate()
+  + addPermission()
+  + expire()
+  + hasAllPermissions()
+  + hasAnyPermission()
+  + hasPermission()
+  + removePermission()
+  + suspend()
+}
+class OrganizationUserFactory {
+  {static} + create()
+  {static} + createInvited()
+  {static} + reconstruct()
+}
+@enduml

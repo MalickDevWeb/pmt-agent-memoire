@@ -1,0 +1,37 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module platform-billing (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "entitlements" {
+  * id : String
+    feature_code : String
+    is_enabled : Boolean
+    max_limit : Integer
+    plan_id : String
+}
+entity "plans" {
+  * id : String
+    created_at : LocalDateTime
+    description : String
+    is_active : Boolean
+    name : String
+    price_monthly : BigDecimal
+    price_yearly : BigDecimal
+}
+entity "subscriptions" {
+  * id : String
+    end_date : LocalDateTime
+    next_billing_date : LocalDateTime
+    organization_id : String
+    plan_id : String
+    start_date : LocalDateTime
+    status : String
+}
+"entitlements" }o..|| "plans" : plan_id (déduit)
+"subscriptions" }o..|| "plans" : plan_id (déduit)
+@enduml

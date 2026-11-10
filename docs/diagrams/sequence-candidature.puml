@@ -1,0 +1,92 @@
+@startuml sequence-candidature
+' =====================================================================
+' Diagramme de séquence — Dépôt puis traitement d'une candidature (MEM-10)
+' Statut  : TEL QUE CONSTRUIT
+' Routes  : POST /api/candidatures/submit (public) ;
+'           GET /api/candidatures/candidatures ; PATCH /api/candidatures/candidatures/{id}/statut (admin)
+' Sources (backend/src/main/java/ecole_221/sn/ecole/) :
+'   CAND = modules/admin/infrastructure/web/CandidaturesController.java
+'   SC   = infrastructure/config/SecurityConfig.java
+'   TRF  = shared/infrastructure/tenant/TenantResolutionFilter.java
+'   HTR  = shared/infrastructure/tenant/HibernateTenantIdentifierResolver.java
+'   CJE  = modules/admissions/infrastructure/persistence/CandidateJpaEntity.java
+'   CST  = modules/admissions/domain/valueobject/CandidateStatus.java
+'   GEH  = infrastructure/web/GlobalExceptionHandler.java
+' Date    : 2026-11-09
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible.
+' =====================================================================
+
+title Candidature — dépôt public puis traitement par l'administration\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-09)</size>
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+autonumber
+
+actor "Candidat\n(sans compte)" as CA
+actor "Administrateur\nde l'école" as AD
+participant "TenantResolutionFilter" as TRF
+participant "SecurityConfig" as SC
+participant "CandidaturesController" as CAND
+collections "Map statique\nen mémoire" as MEM
+participant "CandidateJpaRepository\n(table candidates, @TenantId)" as REPO
+participant "GlobalExceptionHandler" as GEH
+
+== Dépôt (portail public) ==
+CA -> TRF : POST /api/candidatures/submit\nX-Tenant-Slug ou Referer /t/{slug}
+' TRF l.46-62, 74-79 : /api/candidatures/submit n'est PAS une route plateforme (l.212-225)
+alt école introuvable
+  TRF --> CA : 404 { "Tenant not found" }
+else école résolue → TenantContext
+  TRF -> SC : chain.doFilter
+  ' SC l.82-83, 98 : POST /candidatures/submit permitAll
+  SC -> CAND : submitCandidature(body)
+  ' CAND l.71-79 : id « CAND-2026-xxxx », statut EN_ATTENTE
+  CAND -> MEM : put(id, candidature EN_ATTENTE)
+  ' CAND l.93-103 ; organization_id rempli via @TenantId (CJE l.12-14, HTR l.10-18)
+  CAND -> REPO : save(CandidateJpaEntity\nstep="new", admissionStatus=EN_ATTENTE)
+  alt erreur de base
+    ' CAND l.105-107
+    CAND -> CAND : erreur journalisée seulement
+  end
+  ' CAND l.111-116 : 200 même si la sauvegarde a échoué
+  CAND --> CA : 200 { success, candidatureId }
+end
+
+== Traitement (administration) ==
+AD -> SC : GET /api/candidatures/candidatures
+' SC l.100-101 : ADMIN, ADMINISTRATOR, SUPER_ADMIN, PLATFORM_ADMIN ; puis SEC-003 (sequence-controle-ecole.puml)
+SC -> CAND : getCandidatures()
+' CAND l.145-158 (lecture filtrée par école via @TenantId)
+CAND -> REPO : findAll()
+alt aucune ligne en base
+  ' CAND l.160-162
+  CAND -> MEM : values() (toutes écoles confondues)
+end
+CAND --> AD : 200 { candidatures }
+
+AD -> SC : PATCH /api/candidatures/candidatures/{id}/statut\n{ statut }
+SC -> CAND : updateCandidatureStatut(id, body)
+' CAND l.197 ; CST l.37-48 (alias ACCEPTE, VALIDE, REFUSE...)
+CAND -> CAND : CandidateStatus.from(statut)
+alt statut inconnu
+  ' GEH l.81-102
+  CAND --> GEH : IllegalArgumentException
+  GEH --> AD : 400 { VALIDATION_ERROR }
+else EN_ATTENTE | ACCEPTED | REJECTED | EN_COURS | FINALISE
+  ' CAND l.198-208
+  CAND -> REPO : findById(id) → setAdmissionStatus → save
+  CAND -> MEM : mise à jour si présent
+  ' CAND l.210 : 200 même si l'id n'existe pas
+  CAND --> AD : 200 { success, statut }
+end
+
+legend bottom left
+  <b>Anomalies relevées (signalées, non corrigées) :</b>
+  1. Dépôt : 200 « succès » même si la sauvegarde PostgreSQL échoue (CAND l.105-116).
+  2. La Map statique (CAND l.29) n'est pas cloisonnée par école : liste et détail s'y replient (l.160-162, 184-188).
+  3. PATCH sur un id inexistant : 200 au lieu de 404 (CAND l.198-210).
+  Autre voie de traitement existante : /api/admissions/candidates/** (AdmissionController l.39-179), non détaillée.
+end legend
+
+@enduml

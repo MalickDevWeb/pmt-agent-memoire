@@ -1,0 +1,89 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module collaboration (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "documents" <<école>> {
+  * id : String
+    added_by : String
+    group_id : String
+    name : String
+  # organization_id : String
+    size : String
+    type : String
+    url : String
+}
+entity "group_chats" <<école>> {
+  * id : String
+    archived : boolean
+    avatar_url : String
+    chat_type : String
+    created_at : LocalDateTime
+    creator_id : String
+    description : String
+    last_message_time : LocalDateTime
+    max_participants : int
+    muted : boolean
+    muted_until : LocalDateTime
+    name : String
+  # organization_id : String
+    pinned_message_id : String
+    user_id : Set<String>
+    user_id : Set<String>
+}
+entity "meets" <<école>> {
+  * id : String
+    active : Boolean
+    link : String
+  # organization_id : String
+    time : String
+    title : String
+}
+entity "messages" <<école>> {
+  * id : String
+    content : String
+    group_id : String
+  # organization_id : String
+    sender_id : String
+    timestamp : LocalDateTime
+}
+entity "messages" <<école>> {
+  * id : String
+    content : String
+    deleted_for_everyone : boolean
+    duration : Long
+    forwarded_from : String
+    group_id : String
+    media_url : String
+  # organization_id : String
+    reply_to_id : String
+    sender_id : String
+    timestamp : LocalDateTime
+    updated_at : LocalDateTime
+}
+entity "tasks" <<école>> {
+  * id : String
+    assigned_to : String
+    group_id : String
+  # organization_id : String
+    priority : String
+    status : String
+    title : String
+}
+entity "workgroups" <<école>> {
+  * id : String
+    creator_id : String
+    description : String
+    members_count : int
+    name : String
+  # organization_id : String
+}
+entity "users" <<autre module>> #EEEEEE
+"group_chats" }o..|| "users" : user_id (déduit)
+"group_chats" }o..|| "messages" : pinned_message_id (déduit)
+"messages" }o..|| "users" : sender_id (déduit)
+@enduml

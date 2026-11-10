@@ -1,0 +1,48 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module parent (tel que construit)
+skinparam classAttributeIconSize 0
+class Appointment {
+  id : String
+  parentId : String
+  professeurId : String
+  professeurNom : String
+  dateSouhaitee : String
+  motif : String
+  status : String
+  meetUrl : String
+  createdAt : LocalDateTime
+  {static} + create()
+}
+class NoteEnfant <<record>> {
+  id : String
+  coursId : String
+  coursNom : String
+  professeurId : String
+  cc : Double
+  examen : Double
+}
+class Parent {
+  id : String
+  userId : String
+  nom : String
+  prenom : String
+  email : String
+  telephone : String
+  adresse : String
+  profession : String
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+  {static} + create()
+  {static} + reconstitute()
+}
+class ParentEnfant {
+  id : String
+  parentId : String
+  enfantId : String
+  relation : String
+  createdAt : LocalDateTime
+  {static} + create()
+  {static} + reconstitute()
+}
+@enduml

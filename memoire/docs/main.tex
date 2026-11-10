@@ -1,0 +1,107 @@
+% =====================================================================
+% Mémoire Licence Professionnelle E221 — École 221
+% Structure conforme au canevas officiel : memoire/reference/canevas_E221_2026.txt
+% Carte MEM-01 (2026-11-09) — SQUELETTE : titres du canevas + commentaires « À RÉDIGER ».
+% Brouillon de structure préparé par l'Agent 09 (IA) : à déclarer dans annexes/journal-ia.tex.
+% Compilation : npm run build (dans memoire/) — latexmk + bibtex (pas de biber).
+% =====================================================================
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{tikz} % page de garde en pleine page
+\usepackage{style-e221} % pages de partie et sommaire illustrés
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black,
+  pdftitle={École 221 : ERP scolaire multi-écoles et pipeline de développement agentique},
+}
+
+\onehalfspacing
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+% ---------------------------------------------------------------------
+% Pages préliminaires (ordre du canevas, section 1) — numérotation romaine
+% ---------------------------------------------------------------------
+\pagenumbering{roman}
+\input{preliminaires/garde}
+
+\setcounter{page}{2}
+\input{preliminaires/remerciements}
+\input{preliminaires/dedicace}
+\input{preliminaires/preambule}
+
+% Listes des tableaux et des figures (numéro, titre, page) — actualiser avant chaque dépôt
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+
+\input{preliminaires/sigles}
+\input{preliminaires/resume}
+\input{preliminaires/abstract}
+
+% Sommaire : vue synthétique (parties et chapitres uniquement).
+% La table des matières détaillée est placée en fin de document (canevas, « Corps du mémoire »).
+\sommaire
+
+% ---------------------------------------------------------------------
+% Corps du mémoire — numérotation arabe
+% ---------------------------------------------------------------------
+\pagenumbering{arabic}
+
+\input{chapitres/introduction}
+
+\partiepage{PREMIÈRE PARTIE}{ÉTUDE PRÉALABLE}
+\input{chapitres/ch1-cadre}
+\input{chapitres/ch2-besoins}
+
+\partiepage{DEUXIÈME PARTIE}{CONCEPTION DE LA SOLUTION}
+\input{chapitres/ch3-gestion-projet}
+\input{chapitres/ch4-conception}
+\input{chapitres/ch5-cout}
+
+\partiepage{TROISIÈME PARTIE}{MISE EN ŒUVRE}
+\input{chapitres/ch6-realisation}
+\input{chapitres/ch7-tests}
+\input{chapitres/ch8-deploiement}
+
+\input{chapitres/conclusion}
+
+% ---------------------------------------------------------------------
+% Éléments de fin : table des matières détaillée, bibliographie, annexes
+% ---------------------------------------------------------------------
+\clearpage
+\tableofcontents
+
+% Bibliographie (BibTeX standard, sans biber). Style unique à choisir avec l'encadreur
+% (canevas, « Citations et références ») : « plain » est un choix PROVISOIRE.
+% \nocite{*} : liste toutes les entrées de references.bib (permet de compiler avec un .bib vide).
+% À retirer quand les sources seront citées dans le texte par \cite{...}.
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliographie}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references}
+
+\appendix
+\input{annexes/declaration-ia}
+\input{annexes/journal-ia}
+\input{annexes/matrice-tracabilite}
+\input{annexes/suivi-prelecture}
+
+\end{document}

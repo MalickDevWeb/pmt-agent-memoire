@@ -1,0 +1,70 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Modèle du domaine — module student (tel que construit)
+skinparam classAttributeIconSize 0
+class Attendance {
+  id : String
+  date : LocalDate
+  studentId : String
+  studentName : String
+  status : AttendanceStatus
+  courseId : String
+  + markAsAbsent()
+  + markAsExcused()
+  + markAsLate()
+  + markAsPresent()
+}
+class AttendanceFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class StudentCourse {
+  id : String
+  studentId : String
+  courseId : String
+  titre : String
+  coefficient : int
+  progress : int
+  statut : CourseStatus
+  semester : String
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+  + incrementProgress()
+  + markAsAbandoned()
+  + markAsCompleted()
+  + markAsInProgress()
+  + markAsNotStarted()
+  + updateProgress()
+  + updateTitre()
+}
+class StudentCourseFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+class StudentGrade {
+  id : String
+  studentId : String
+  module : String
+  professor : String
+  ects : int
+  ccGrade : double
+  examGrade : double
+  promoAverage : double
+  semester : String
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+  + calculateFinalGrade()
+  + hasHonors()
+  + hasMention()
+  + hasPassed()
+  + updateCcGrade()
+  + updateExamGrade()
+  + updateModule()
+  + updateProfessor()
+  + updatePromoAverage()
+}
+class StudentGradeFactory {
+  {static} + create()
+  {static} + reconstruct()
+}
+@enduml

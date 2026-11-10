@@ -1,0 +1,57 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module admissions (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "admission_settings" <<école>> {
+  * id : String
+    academic_year : String
+    additional_settings : String
+    announcement_message : String
+    closing_date : LocalDateTime
+    created_at : LocalDateTime
+    current_candidates_count : Integer
+    interview_required : Boolean
+    is_open : Boolean
+    max_candidates : Integer
+    min_academic_score : Double
+    opening_date : LocalDateTime
+  # organization_id : String
+    passing_score : Double
+    registration_fee_amount : Long
+    required_documents : String
+    show_register_button : Boolean
+    updated_at : LocalDateTime
+}
+entity "candidates" <<école>> {
+  * id : String
+    academic_score : Double
+    additional_info : String
+    admission_status : String
+    course_choice : String
+    created_at : LocalDateTime
+    current_step : String
+    diploma_uploaded : Boolean
+    email : String
+    first_name : String
+    full_name : String
+    id_card_uploaded : Boolean
+    interview_date : LocalDateTime
+    interview_score : Double
+    last_name : String
+    motivation_letter_uploaded : Boolean
+  # organization_id : String
+    phone : String
+    registration_fee_amount : Long
+    registration_fee_paid : Boolean
+    registration_fee_reference : String
+    rejection_reason : String
+    submitted_at : LocalDateTime
+    total_score : Double
+    updated_at : LocalDateTime
+}
+@enduml

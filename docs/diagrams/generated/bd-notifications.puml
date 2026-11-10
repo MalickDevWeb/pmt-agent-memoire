@@ -1,0 +1,55 @@
+' Généré par audit/gen_diagrams.py depuis backend@1085787 — ne pas modifier à la main
+@startuml
+title Base de données — module notifications (tel que construit)
+hide circle
+skinparam linetype ortho
+legend right
+  « école » : colonne organization_id filtrée par Hibernate (@TenantId)
+  pointillés : lien déduit du nom de colonne (pas de clé étrangère déclarée)
+endlegend
+entity "notification_templates" <<école>> {
+  * id : String
+    action_required : Boolean
+    body_template : String
+    category : String
+    created_at : LocalDateTime
+    default_action_link : String
+    default_action_type : String
+    default_priority : String
+    description : String
+    is_active : Boolean
+  # organization_id : String
+    subject : String
+    supported_variables : String
+    template_key : String
+    template_name : String
+    template_type : String
+    updated_at : LocalDateTime
+}
+entity "notifications" <<école>> {
+  * id : String
+    action_link : String
+    action_required : Boolean
+    action_type : String
+    additional_data : String
+    category : String
+    created_at : LocalDateTime
+    expires_at : LocalDateTime
+    is_read : Boolean
+    message : String
+    notification_type : String
+  # organization_id : String
+    priority : String
+    read_at : LocalDateTime
+    recipient_id : String
+    recipient_role : String
+    recipient_type : String
+    sent_via_email : Boolean
+    sent_via_push : Boolean
+    sent_via_sms : Boolean
+    title : String
+    updated_at : LocalDateTime
+}
+entity "users" <<autre module>> #EEEEEE
+"notifications" }o..|| "users" : recipient_id (déduit)
+@enduml

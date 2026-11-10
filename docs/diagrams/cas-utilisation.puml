@@ -1,0 +1,292 @@
+@startuml cas-utilisation
+' =====================================================================
+' Diagramme de cas d'utilisation par rôle — École 221 (MEM-09)
+' Statut  : TEL QUE CONSTRUIT. Chaque cas correspond à des routes de
+'           contrôleurs RÉELLES ; les données fictives ou non persistées
+'           sont signalées en note. Aucun cas « cible » n'est dessiné.
+' Préfixe : toutes les routes sont servies sous /api
+'           (backend/src/main/resources/application.yaml:4 context-path).
+' Abréviations des sources (backend/src/main/java/ecole_221/sn/ecole/) :
+'   SC   = infrastructure/config/SecurityConfig.java
+'   AUTH = modules/auth/infrastructure/web/AuthController.java
+'   ADM  = modules/admin/infrastructure/web/AdminController.java
+'   APL  = modules/admin/infrastructure/web/AdminPlanningController.java
+'   ASP  = modules/admin/infrastructure/web/AdminStudentProfileController.java
+'   CAND = modules/admin/infrastructure/web/CandidaturesController.java
+'   ADMS = modules/admissions/infrastructure/web/AdmissionController.java
+'   AUD  = modules/audit/infrastructure/web/AuditController.java
+'   DSH  = modules/dashboard/infrastructure/web/DashboardController.java
+'   FIN  = modules/finance/infrastructure/web/FinanceController.java
+'   EXP  = modules/finance/infrastructure/web/ExpenseController.java
+'   TEN  = modules/superadmin/infrastructure/web/TenantController.java
+'   SAU  = modules/superadmin/infrastructure/web/SuperAdminUserController.java
+'   PLAN = modules/platform/billing/infrastructure/web/SuperAdminPlanController.java
+'   SUB  = modules/platform/billing/infrastructure/web/SuperAdminSubscriptionController.java
+'   TRF  = modules/platform/organization/infrastructure/web/StudentTransferController.java
+'   ONB  = modules/platform/organization/infrastructure/web/PublicOnboardingController.java
+'   PROF = modules/professor/infrastructure/web/ProfessorController.java
+'   PEX  = modules/professor/infrastructure/web/ProfExtraController.java
+'   STU  = modules/student/infrastructure/web/StudentController.java
+'   PAR  = modules/parent/infrastructure/web/ParentController.java
+'   PSV  = modules/parent/application/service/ParentService.java
+'   SEC  = modules/security/infrastructure/web/SecurityController.java
+'   ROLE = modules/auth/domain/valueobject/RoleUtilisateur.java
+' Date    : 2026-11-09
+' Auteur  : Agent 11 — Modélisation
+' Aucune donnée sensible : ni nom réel, ni e-mail, ni secret, ni URL.
+' =====================================================================
+
+title École 221 — Cas d'utilisation par rôle\n<size:11>Statut : TEL QUE CONSTRUIT (2026-11-09) — routes réelles des contrôleurs, préfixe /api</size>
+
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor<<fictif>> #FFE5E5
+  BorderColor<<fictif>> #B00020
+  BackgroundColor<<partiel>> #FFF6D6
+  BorderColor<<partiel>> #B08900
+}
+
+' ---------------- Acteurs (rôles : ROLE l.73-85) ----------------
+actor "Utilisateur\nauthentifié" as U
+actor "Super-admin\n<size:10>SUPER_ADMIN / PLATFORM_ADMIN</size>" as SA
+actor "Administrateur d'école\n<size:10>ADMIN / ADMINISTRATOR</size>" as AD
+actor "Professeur\n<size:10>PROFESSEUR / TEACHER</size>" as PR
+actor "Étudiant\n<size:10>ETUDIANT / STUDENT</size>" as ET
+actor "Parent\n<size:10>PARENT</size>" as PA
+actor "Vigile\n<size:10>VIGIL</size>" as VI
+actor "Candidat / visiteur\nsans compte" as CA
+
+' Généralisations : tous les rôles connectés partagent les cas « session »
+AD -|> U
+PR -|> U
+ET -|> U
+PA -|> U
+VI -|> U
+' SUPER_ADMIN est accepté partout où ADMIN l'est (SC l.101, 106, 108-110, 113)
+' et franchit le contrôle d'appartenance (TenantMembershipInterceptor l.56-58)
+SA -|> AD
+
+rectangle "École 221 — API REST (/api)" {
+
+  package "Session (tous rôles)" {
+    usecase "Se connecter\n<size:9>POST /auth/login | /auth/login-token</size>" as UC_LOGIN
+    usecase "Consulter son profil\n<size:9>GET /auth/me</size>" as UC_ME
+    usecase "Se déconnecter\n<size:9>POST /auth/logout</size>" as UC_LOGOUT
+    usecase "Consulter le planning\n<size:9>/planning/** (authentifié)</size>" as UC_PLANNING
+  }
+  ' UC_LOGIN : AUTH l.38, l.81 ; SC l.38-39 (public)
+  ' UC_ME    : AUTH l.142 ; UC_LOGOUT : AUTH l.111 ; UC_PLANNING : SC l.107
+
+  package "Plateforme (SUPER_ADMIN)" {
+    usecase "Gérer les écoles\n(créer, approuver,\nsuspendre, activer)\n<size:9>/v1/super-admin/tenants</size>" as UC_TEN
+    usecase "Gérer les utilisateurs\nde la plateforme\n<size:9>/v1/super-admin/users</size>" as UC_SAU
+    usecase "Gérer les plans\net leurs droits\n<size:9>/v1/super-admin/plans</size>" as UC_PLAN
+    usecase "Gérer les abonnements\n<size:9>/v1/super-admin/subscriptions</size>" as UC_SUB
+    usecase "Inscrire / transférer\nun élève entre écoles\n<size:9>/platform/students</size>" as UC_TRF
+  }
+  ' UC_TEN  : TEN l.21-22, 36-105 ; UC_SAU : SAU l.22-23, 45-73
+  ' UC_PLAN : PLAN l.16-17, 26-48 ; UC_SUB : SUB l.15-16, 25-41
+  ' UC_TRF  : TRF l.14, 31, 63 ; SC l.103-104
+
+  package "Administration de l'école (ADMIN)" {
+    usecase "Gérer les élèves\n(créer, statut, supprimer)\n<size:9>/admin/students</size>" as UC_STU
+    usecase "Consulter le dossier\n360° d'un élève\n<size:9>/admin/students/{id}/profile360</size>" as UC_360
+    usecase "Gérer professeurs\net personnel\n<size:9>/admin/professors, /admin/staff</size>" as UC_STAFF
+    usecase "Planifier\n(salles, filières, classes,\ncréneaux, cours, promotions)\n<size:9>/admin/planning/**, /admin/schedule</size>" as UC_APLAN
+    usecase "Gérer les présences\n<size:9>/admin/attendance</size>" as UC_ATT
+    usecase "Paramétrer la campagne\nd'admission\n<size:9>POST /candidatures/settings,\n/admissions/settings</size>" as UC_ASET
+    usecase "Traiter les candidatures\n(lister, consulter,\nchanger le statut)\n<size:9>/candidatures/candidatures/**,\n/admissions/candidates/**</size>" as UC_ATRT
+    usecase "Gérer la finance\n(frais élèves, transactions,\ndépenses, relances)\n<size:9>/finance/**</size>" as UC_FIN
+    usecase "Piloter le tableau\nde bord (KPI, alertes)\n<size:9>/dashboard/**, /admin/stats</size>" as UC_DSH
+    usecase "Consulter le journal\nd'audit et de sécurité\n<size:9>/audit/**</size>" as UC_AUD
+    usecase "Gérer les profils\nde vigiles\n<size:9>/security/vigil-profiles</size>" as UC_VPROF
+  }
+  ' UC_STU   : ADM l.82, 201, 224, 271 ; SC l.105-106
+  ' UC_360   : ASP l.26, 32, 49, 55, 73
+  ' UC_STAFF : ADM l.285, 316, 398, 407, 416, 441, 454
+  ' UC_APLAN : APL l.27-79 ; ADM l.328, 466, 483 ; ASP l.91
+  ' UC_ATT   : ADM l.358, 365, 378
+  ' UC_ASET  : CAND l.60 ; ADMS l.112, 123, 130 ; SC l.99-101 (POST settings non public)
+  ' UC_ATRT  : CAND l.141, 166, 191 ; ADMS l.39-179 ; SC l.100-101
+  ' UC_FIN   : FIN l.30-178 ; EXP l.47-123 ; SC l.105
+  ' UC_DSH   : DSH l.30-197 ; ADM l.123
+  ' UC_AUD   : AUD l.30-166 ; SC l.105
+  ' UC_VPROF : SEC l.34-74 ; SC l.109 (ADMIN, VIGIL, SUPER_ADMIN)
+
+  package "Enseignement (PROFESSEUR)" {
+    usecase "Consulter ses cours\net leurs élèves\n<size:9>/professor/courses/**</size>" as UC_PCRS
+    usecase "Saisir les notes\n<size:9>/professor/courses/{id}/grades</size>" as UC_PGRD
+    usecase "Publier leçons, modules,\ndevoirs, quiz, rappels\n<size:9>/professor/courses|modules/**</size>" as UC_PCNT
+    usecase "Annuler / reporter\nune séance\n<size:9>/professor/planning|schedule/**</size>" as UC_PSES
+    usecase "Consulter les passages\nau portail\n<size:9>GET /vigil/check-ins</size>" as UC_CHK
+  }
+  ' UC_PCRS : PROF l.45, 68 ; SC l.110
+  ' UC_PGRD : PROF l.101, 117
+  ' UC_PCNT : PROF l.142-242, 315, 330, 353 ; PEX l.32, 51, 71
+  ' UC_PSES : PROF l.261, 280, 297 ; PEX l.145, 164, 183
+  ' UC_CHK  : SEC l.101 ; SC l.108
+
+  package "Scolarité (ETUDIANT)" {
+    usecase "Consulter profil\net tableau de bord\n<size:9>/student/profile, /dashboard</size>" as UC_SDSH
+    usecase "Présenter son badge QR\n<size:9>GET /student/digital-badge</size>" as UC_BADGE
+    usecase "Consulter ses notes,\nles télécharger,\ndemander une révision\n<size:9>/student/grades/**</size>" as UC_SGRD
+    usecase "Suivre cours, rendre\ndevoirs et quiz\n<size:9>/student/courses|homeworks/**</size>" as UC_SCRS
+    usecase "Participer aux\nsessions en direct\n<size:9>/student/live-sessions/**</size>" as UC_LIVE
+    usecase "Pointer sa présence\n<size:9>/student/attendances</size>" as UC_SATT
+    usecase "Questionner le\ntuteur IA\n<size:9>POST /student/tutor/chat</size>" as UC_TUTOR
+  }
+  ' UC_SDSH  : STU l.29, 65, 76 ; SC l.113
+  ' UC_BADGE : STU l.89
+  ' UC_SGRD  : STU l.210, 219, 257
+  ' UC_SCRS  : STU l.274, 283, 299, 308, 330, 448, 459
+  ' UC_LIVE  : STU l.155, 167, 179, 198, 420, 429
+  ' UC_SATT  : STU l.120, 132
+  ' UC_TUTOR : STU l.360 (fournisseur IA « mock » par défaut, cf. contexte.puml)
+
+  package "Suivi familial (PARENT)" {
+    usecase "Lister ses enfants\n<size:9>GET /parent/enfants</size>" as UC_KIDS <<partiel>>
+    usecase "Suivre un enfant\n(stats, présences,\nnotes, planning)\n<size:9>/parent/enfants/{id}/**</size>" as UC_KIDF <<fictif>>
+    usecase "Échanger des messages\n<size:9>/parent/messages</size>" as UC_PMSG <<fictif>>
+    usecase "Inscrire un enfant,\nsuivre ses dossiers\n<size:9>/parent/inscrire-enfant,\n/parent/candidatures</size>" as UC_PINS <<fictif>>
+    usecase "Justifier une absence\n<size:9>POST /parent/presences/{id}/justifier</size>" as UC_PJUS <<fictif>>
+    usecase "Demander un rendez-vous\n<size:9>/parent/rdv, /parent/professeurs</size>" as UC_PRDV <<partiel>>
+    usecase "Consulter ses paiements\n<size:9>GET /parent/paiements</size>" as UC_PPAY <<partiel>>
+  }
+  ' UC_KIDS : PAR l.44 ; PSV l.50-71 (liens réels, filière/classe à null)
+  ' UC_KIDF : PAR l.56-117 (contrôle de filiation l.64-67) ; PSV l.73-150 (valeurs codées en dur)
+  ' UC_PMSG : PAR l.137, 147, 166 ; PSV l.152-218
+  ' UC_PINS : PAR l.179, 189 ; PSV l.220-251
+  ' UC_PJUS : PAR l.270 ; PSV l.321-337
+  ' UC_PRDV : PAR l.227, 238, 247 ; PSV l.273-327
+  ' UC_PPAY : PAR l.202 ; PSV l.253-262 (« non_disponible »)
+  ' Rôle : SC l.112 (/parent/** réservé à PARENT)
+
+  package "Contrôle d'accès (VIGIL)" {
+    usecase "Scanner un badge\nau portail\n<size:9>POST /vigil/scan</size>" as UC_SCAN <<partiel>>
+    usecase "Consulter dernier scan\net son profil\n<size:9>/vigil/last-scan, /vigil/profile</size>" as UC_VLAST <<partiel>>
+    usecase "Suivre les points\nde contrôle\n<size:9>/security/checkpoint-status,\n/security/scan-logs</size>" as UC_CKP
+  }
+  ' UC_SCAN  : SEC l.111-162 ; SC l.109
+  ' UC_VLAST : SEC l.106-109, 164 ; UC_CKP : SEC l.83, 88
+
+  package "Portail public (sans compte)" {
+    usecase "Consulter la campagne\nd'admission\n<size:9>GET /candidatures/settings</size>" as UC_CSET
+    usecase "Déposer une candidature\n<size:9>POST /candidatures/submit</size>" as UC_CSUB
+    usecase "Inscrire une école\n<size:9>POST /register-school</size>" as UC_REG
+  }
+  ' UC_CSET : CAND l.54 ; SC l.74-75, 97
+  ' UC_CSUB : CAND l.68-117 ; SC l.82-83, 98
+  ' UC_REG  : ONB l.31-37, 39 ; SC l.42-44
+}
+
+' ---------------- Associations acteurs -> cas ----------------
+U --> UC_LOGIN
+U --> UC_ME
+U --> UC_LOGOUT
+U --> UC_PLANNING
+
+SA --> UC_TEN
+SA --> UC_SAU
+SA --> UC_PLAN
+SA --> UC_SUB
+SA --> UC_TRF
+
+AD --> UC_STU
+AD --> UC_360
+AD --> UC_STAFF
+AD --> UC_APLAN
+AD --> UC_ATT
+AD --> UC_ASET
+AD --> UC_ATRT
+AD --> UC_FIN
+AD --> UC_DSH
+AD --> UC_AUD
+AD --> UC_VPROF
+AD --> UC_CHK
+
+PR --> UC_PCRS
+PR --> UC_PGRD
+PR --> UC_PCNT
+PR --> UC_PSES
+PR --> UC_CHK
+
+ET --> UC_SDSH
+ET --> UC_BADGE
+ET --> UC_SGRD
+ET --> UC_SCRS
+ET --> UC_LIVE
+ET --> UC_SATT
+ET --> UC_TUTOR
+
+PA --> UC_KIDS
+PA --> UC_KIDF
+PA --> UC_PMSG
+PA --> UC_PINS
+PA --> UC_PJUS
+PA --> UC_PRDV
+PA --> UC_PPAY
+
+VI --> UC_SCAN
+VI --> UC_VLAST
+VI --> UC_CKP
+VI --> UC_CHK
+VI --> UC_VPROF
+
+CA --> UC_CSET
+CA --> UC_CSUB
+CA --> UC_REG
+
+UC_SCAN ..> UC_BADGE : <<lit le QR du>>
+' SEC l.119-125 : badge « STU_SECURE:... » validé par studentUseCase.validateQrToken
+
+' ---------------- Notes : données fictives / écarts ----------------
+note right of UC_KIDF
+  <b>Données FICTIVES</b> (ParentService) :
+  stats, présences, notes, planning,
+  messages, dossiers = valeurs codées en dur
+  (PSV l.73-180, 220-239) ; envoi de message,
+  inscription, justification, profil
+  <b>non persistés</b> (PSV l.182-251, 264-271, 321-337).
+  Constat : docs/api-contract.md l.294-315
+  (carte APP-BE-19).
+  Carte APP-BE-17 : <b>aucune référence trouvée</b>
+  dans le dépôt (recherche du 2026-11-09).
+end note
+
+note right of UC_PRDV
+  <b>Partiel</b> : RDV persistés, seulement ceux du
+  parent (repli fictif retiré, backend 5149cfa,
+  APP-SEC-14) ; 2 professeurs fictifs
+  si aucun compte PROFESSEUR (PAR l.247-266).
+  Paiements : réponse vide « non_disponible »
+  (PSV l.253-262) — aucune donnée fictive.
+end note
+
+note right of UC_SCAN
+  <b>Partiel</b> : validation réelle du QR
+  (SEC l.119-131), mais « assiduite »,
+  « statutFrais » et « zone » codés en dur
+  (SEC l.148-150) ; profil vigile toujours
+  « VIG-221 » (SEC l.108).
+end note
+
+note bottom of UC_TRF
+  Écart : @PreAuthorize autorise ADMIN (TRF l.32, 64)
+  mais la règle d'URL /platform/** le réserve à
+  SUPER_ADMIN / PLATFORM_ADMIN (SC l.103-104).
+  Dessiné pour SUPER_ADMIN seul (règle la plus stricte).
+end note
+
+legend bottom left
+  <b>Statut :</b> tel que construit — seuls les cas adossés à une route réelle sont dessinés.
+  <back:#FFE5E5> fictif </back> réponses codées en dur ou non persistées ;  <back:#FFF6D6> partiel </back> réel mais incomplet.
+  <b>Non dessiné :</b> /collaboration/**, /wiki/**, /sync/**, /media/**, /notifications/** sont
+  déclarés <b>publics</b> (SecurityConfig l.60-70) : aucun rôle ne peut leur être rattaché (anomalie signalée).
+  Rôles SECRETAIRE, COMPTABLE, VISITEUR : déclarés (RoleUtilisateur l.81-84) sans route dédiée.
+  ADMIN accède aussi à /professor/** et /student/** (SecurityConfig l.110, 113) : non redessiné.
+end legend
+
+@enduml
