@@ -47,6 +47,35 @@ La figure~\ref{fig:schema-agents} illustre la topologie de collaboration et de s
   \label{fig:schema-agents}
 \end{figure}
 
+\subsection{Cinématique des flux et protocole de communication inter-agents}
+
+La topologie présentée ci-dessus ne correspond pas à un schéma figé, mais à une \textbf{cinématique d'échanges séquentiels rigoureux} articulée autour de six étapes coordonnées par le bus asynchrone (\texttt{agent\_messages.md}) :
+
+\begin{enumerate}
+  \item \textbf{Étape 1 : Mandat souverain et initialisation du ticket} :
+  Le Tech Lead Humain émet l'arbitrage technique ou la demande de fonctionnalité. Le Superviseur Kasongo (Agent~00) instancie le ticket sur le bus avec statut \texttt{PENDING} et mandate la branche Git dédiée (\texttt{feat/...}).
+  
+  \item \textbf{Étape 2 : Spécification et modélisation formelle} :
+  L'Analyste (Agent~01) formalise les critères d'acceptation (\texttt{US-xx}) ; l'Architecte (Agent~02) fixe les contrats d'API (\nolinkurl{docs/api-contract.md}) et l'Ingénieur Modélisation (Agent~11) génère les diagrammes de séquence alignés avec le code.
+  
+  \item \textbf{Étape 3 : Développement et cliquets anti-régression} :
+  Le Backend Developer (Agent~03) et le Frontend Developer (Agent~04) implémentent le code en respectant les gardes-fous stricts (zéro en-tête \texttt{X-Tenant-Id}, zéro `any` ajouté, requêtes TanStack Query).
+  
+  \item \textbf{Étape 4 : Dépôt du Handover sur le bus} :
+  Les développeurs publient leur livraison sur le bus avec la liste des fichiers et leurs empreintes cryptographiques. Ce message déclenche immédiatement les portes de qualification.
+  
+  \item \textbf{Étape 5 : Qualification QA et audit DevSecOps} :
+  L'Ingénieur QA (Agent~05) exécute les 16 modules de tests d'intégration (\nolinkurl{logs/qa_execution.log}) ; le DevSecOps (Agent~07) vérifie l'absence absolue de secrets avec GitLeaks et la conformité des conteneurs.
+  
+  \item \textbf{Étape 6 : Revue critique, visa Kasongo et commit final} :
+  Le Code Reviewer (Agent~06) délivre son \texttt{VERDICT: APPROVED} ; Kasongo valide mécaniquement les dix règles d'or (\texttt{audit/check\_agent\_rules.py}) et délivre son visa. Le Tech Lead procède alors à la fusion officielle sur la branche \texttt{main} avec tag sémantique (\texttt{v1.0.0}).
+\end{enumerate}
+
+\begin{center}
+  \small
+  \textit{Note pour la consultation numérique : une simulation interactive animée visualisant le flux dynamique des paquets entre agents en temps réel est accessible via l'outil de démonstration du projet (\nolinkurl{agentic_commit_animation.html}).}
+\end{center}
+
 Le guide exhaustif de portabilité et de réutilisation de ce framework pour d'autres projets logiciels est documenté dans \nolinkurl{docs/guides/framework_agentic_coding.md}.
 
 \subsection{Planification : prévisionnelle vs réalisée}
