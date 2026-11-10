@@ -7,17 +7,17 @@ La conduite d'un projet informatique de l'envergure d'un progiciel de gestion in
 Deux démarches traditionnelles ont été initialement étudiées :
 \begin{enumerate}
     \item \textbf{Le modèle en cascade (cycle en V)} : adapté aux cahiers des charges figés, il offre une traçabilité documentaire forte mais pèche par sa rigidité, retardant excessivement la détection des écarts d'intégration entre le serveur Spring Boot et l'interface React.
-    \item \textbf{Les méthodes agiles (Scrum / Kanban)} : axées sur l'itération rapide et les retours utilisateurs fréquents, elles facilitent l'adaptation continue mais risquent, sans outillage de gouvernance strict, de laisser dériver la dette technique ou d'éroder l'étanchéité multi-écoles sous la pression des délais.
+    \item \textbf{Les méthodes agiles (Scrum / Kanban)} : axées sur l'itération rapide et les retours utilisateurs fréquents~\cite{beck2001agile}, elles facilitent l'adaptation continue mais risquent, sans outillage de gouvernance strict, de laisser dériver la dette technique ou d'éroder l'étanchéité multi-écoles sous la pression des délais.
 \end{enumerate}
 
-Face à ces limites et à la complexité d'un système à acteurs multiples, nous avons retenu une démarche innovante : \textbf{l'Ingénierie Logicielle Agentique Supervisée} (\emph{Supervised Agentic Coding}), combinant un découpage itératif par fonctionnalités et une équipe d'agents d'intelligence artificielle spécialisés encadrés par un superviseur automatisé et un arbitrage humain systématique (\emph{Human-in-the-Loop}). Dans cette approche, aucune ligne de code ni aucun schéma d'API n'est intégré sans franchir des portes de validation formelles (\emph{Quality Gates}).
+Face à ces limites et à la complexité d'un système à acteurs multiples, nous avons retenu une démarche innovante : \textbf{l'Ingénierie Logicielle Agentique Supervisée} (\emph{Supervised Agentic Coding}). Cette approche combine un découpage itératif par fonctionnalités et une équipe d'agents IA spécialisés, encadrés par un superviseur automatisé et un arbitrage humain souverain (\emph{Human-in-the-Loop}). Ainsi, aucune ligne de code ni aucun schéma d'API n'est intégré sans franchir des portes de validation formelles (\emph{Quality Gates}).
 
 \section{Mode de gestion et méthode de collecte}
 
 Il convient de distinguer rigoureusement la gouvernance du projet technique de la méthode de collecte et d'analyse des besoins du terrain :
 \begin{itemize}
     \item \textbf{Mode de gestion du projet} : le pilotage s'appuie sur une hiérarchie de responsabilités outillée par script (\texttt{orchestrator.sh}). Chaque agent IA se voit assigner une fiche de poste stricte définissant ses livrables autorisés, ses règles bloquantes et ses interdictions formelles. Les échanges entre profils s'effectuent via un bus de communication asynchrone (\texttt{agent\_messages.md}).
-    \item \textbf{Méthode de collecte et d'analyse} : l'analyse des besoins s'est fondée sur l'étude des processus administratifs et pédagogiques des établissements sénégalais et ouest-africains (gestion des semestres, coefficients, filières, relevés de notes avec mentions, paiements des droits d'inscription et contrôle des accès par vigile). Les exigences recueillies ont été formalisées sous forme de \emph{User Stories} (\texttt{US-xx}) et de règles métier (\texttt{BR-xx}) consignées dans \nolinkurl{docs/requirements.md}.
+    \item \textbf{Méthode de collecte et d'analyse} : l'analyse des besoins s'est fondée sur l'étude des processus administratifs et pédagogiques des établissements sénégalais et ouest-africains. Ces processus couvrent les semestres, coefficients, filières, relevés avec mentions, paiements des droits et contrôle par vigile. Les exigences recueillies ont été formalisées sous forme de \emph{User Stories} (\texttt{US-xx}) et de règles métier (\texttt{BR-xx}) consignées dans \nolinkurl{docs/requirements.md}.
 \end{itemize}
 
 \section{Rôles, tâches et planification}

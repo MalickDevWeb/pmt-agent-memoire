@@ -1,14 +1,49 @@
 \chapter{Cadre du projet et contexte d'étude}
 
-\section{Cadre du projet}
-% À RÉDIGER : organisation ou environnement concerné, acteurs, mission du groupe, bénéficiaires
-% et contraintes. Décrire les responsabilités de CHAQUE membre (contribution personnelle visible).
-% Sources possibles : docs/requirements.md (acteurs, rôles) ; historique git (contributions).
+\section{Cadre institutionnel et mission du projet}
 
-\section{Contexte d'étude}
-% À RÉDIGER : pratiques existantes, leurs limites et les enjeux métier (gestion scolaire multi-écoles).
-% Comparer les solutions ou travaux pertinents AVEC DES SOURCES VÉRIFIÉES (ouvertes, auteur/titre/date/lien)
-% et les ajouter à references.bib. Aucune référence produite de mémoire ou par une IA.
+Le projet \textbf{École~221} s'inscrit dans le cursus de Licence Professionnelle en Génie Logiciel. Il répond à un besoin critique des acteurs éducatifs au Sénégal et en Afrique de l'Ouest : moderniser et unifier la gouvernance scolaire à travers une plateforme logicielle moderne accessible en mode SaaS (\emph{Software as a Service}).
 
-% Éléments attendus (canevas) : présentation de l'existant, périmètre du projet,
-% justification du problème à résoudre.
+La mission de l'équipe consiste à concevoir et qualifier une solution numérique gérant simultanément plusieurs établissements sur une infrastructure mutualisée. Ce paradigme multi-tenant garantit une isolation stricte des données entre écoles tout en minimisant les coûts cloud et de maintenance~\cite{chong2006saas}.
+
+Les parties prenantes du projet sont clairement identifiées :
+\begin{itemize}
+  \item \textbf{Le Super-Administrateur de la plateforme} : supervise l'écosystème global, pilote la création des établissements abonnés, contrôle la souscription des forfaits et surveille la santé des serveurs ;
+  \item \textbf{Les Directions d'établissement (Directeurs et Gestionnaires)} : gèrent les inscriptions, les filières, les emplois du temps, les bourses, le paiement des scolarités et les communications officielles ;
+  \item \textbf{Le Corps Enseignant} : planifie les cours, enregistre la présence des élèves, publie les devoirs et renseigne les évaluations et moyennes pondérées ;
+  \item \textbf{Les Parents d'élèves} : suivent en direct l'assiduité, consultent les bulletins de notes et effectuent les paiements des mensualités scolaires ;
+  \item \textbf{Les Élèves et Candidats} : déposent leur dossier d'admission en ligne, accèdent à leur planning hebdomadaire, interagissent avec leurs enseignants et visualisent leur progression ;
+  \item \textbf{Les Vigiles du campus} : assurent le contrôle sécurisé des flux physiques aux portes de l'école grâce à un scanner de badges QR capable de fonctionner même en cas de rupture de la liaison Internet.
+\end{itemize}
+
+\section{Contexte d'étude et limites des solutions existantes}
+
+Le paysage actuel de la gestion des établissements d'enseignement en Afrique subsaharienne est caractérisé par une forte disparité technique et d'importantes vulnérabilités opérationnelles. À l'issue d'une analyse comparative du terrain et de l'état de l'art, trois grandes catégories de pratiques ont été mises en évidence :
+
+\begin{enumerate}
+  \item \textbf{La gestion manuelle sur registres papier et tableurs non centralisés} :
+  De nombreux établissements s'appuient encore sur des fichiers Excel locaux partagés par clé USB. Cette approche engendre des pertes de données récurrentes, des doublons d'immatriculation et des risques majeurs de fraude ou d'altération malveillante des notes lors de la préparation des jurys de délibération.
+  
+  \item \textbf{Les progiciels monopostes hérités (\emph{Legacy Systems})} :
+  Développés au début des années 2000, ces outils installés sur un ordinateur fixe au secrétariat ne permettent aucun accès distant pour les familles ou les enseignants. Ils imposent une dépendance totale à une machine physique dont la défaillance matérielle paralyse l'école.
+  
+  \item \textbf{Les plateformes occidentales standardisées (type ERP génériques)} :
+  Bien que robustes, ces suites logicielles s'avèrent inadaptées à la réalité économique locale : coûts d'abonnement prohibitifs calculés en devises fortes, lourdeur paramétrique excessive et incompatibilité avec les fluctuations de bande passante réseau ou les modes d'émargement spécifiques au contexte local.
+\end{enumerate}
+
+Le projet École~221 a pour objectif de surmonter l'ensemble de ces limitations en proposant un système centré sur l'utilisateur, économique, performant et rigoureusement conforme aux normes d'ingénierie logicielle~\cite{iso25010}.
+
+\section{Périmètre fonctionnel et contraintes d'ingénierie}
+
+Le système se focalise sur sept domaines fonctionnels prioritaires :
+\begin{enumerate}
+  \item \textbf{L'isolation multi-tenant stricte} : aucune école ne doit pouvoir accéder aux données administratives ou académiques d'une école concurrente ;
+  \item \textbf{Le portail d'admission et de pré-inscription} : dématérialisation complète des dossiers de candidature avec vérification documentaire ;
+  \item \textbf{La planification académique et le suivi pédagogique} : gestion des filières, des promotions, des cours et des créneaux horaires ;
+  \item \textbf{La gestion des évaluations et des notes} : calcul automatisé des moyennes pondérées par coefficients ;
+  \item \textbf{Le contrôle des finances scolaires} : émission des échéanciers, encaissement des frais d'inscription et suivi des impayés ;
+  \item \textbf{Le contrôle d'accès campus par QR Code} : scanning rapide avec résilience hors-ligne (\emph{Local-First}) ;
+  \item \textbf{La messagerie collaborative sécurisée} : notifications et salons d'échange entre administration, professeurs et familles.
+\end{enumerate}
+
+Ces objectifs constituent le socle des exigences fonctionnelles formalisées au chapitre suivant.

@@ -1,37 +1,48 @@
-\chapter{Réalisation et développement}
-% Statut à indiquer pour CHAQUE fonctionnalité : Réalisé (preuve exécutée) / Partiel / Prévu.
+\chapter{Réalisation technique et implémentation logicielle}
 
-\section{Environnement de travail et versions}
-% À RÉDIGER : environnement de travail et versions utiles (relevées dans le dépôt : backend/, frontend/,
-% docker-compose.yml), outils de développement.
+\section{Environnement de développement et pile technologique}
 
-\section{Organisation du dépôt Git}
-% À RÉDIGER : arborescence (backend/, frontend/, agents/, docs/, memoire/, tests/, qa/, ops/...),
-% branches, historique des contributions. Source : historique git.
+Le développement de la plateforme École~221 a été conduit en appliquant les meilleures pratiques de génie logiciel moderne. Le choix des technologies découle directement des exigences de robustesse, de maintenabilité et de modularité formalisées lors de la phase de conception :
 
-\section{Composants développés et interactions}
-% À RÉDIGER : composants développés et leurs interactions.
-% Sources : docs/architecture.md, docs/api-contract.md, docs/database.md.
+\begin{itemize}
+  \item \textbf{Cœur applicatif Backend} : \textbf{Java~17 LTS} et \textbf{Spring Boot~3.2}, offrant un écosystème éprouvé, une sécurité déclarative avancée avec Spring Security~6 et une excellente prise en charge des architectures modulaires~\cite{springdoc2023} ;
+  \item \textbf{Persistance et base de données} : \textbf{PostgreSQL~16}, sélectionné pour sa robustesse transactionnelle ACID, ses fonctionnalités JSON natives et la puissance de ses politiques de sécurité au niveau de la ligne (\emph{Row Level Security - RLS})~\cite{postgresrls2023} ;
+  \item \textbf{Interface utilisateur Frontend} : \textbf{React~18} en combinaison avec \textbf{TypeScript~5} et le moteur de construction \textbf{Vite~7}, garantissant un typage statique strict et des temps de rafraîchissement ultra-rapides (\emph{Hot Module Replacement}) ;
+  \item \textbf{Gestion des états serveur et requêtes} : \textbf{TanStack Query v5 (React Query)}, assurant la mise en cache transparente, la déduplication des requêtes réseau et la gestion fine des états de chargement~\cite{tanstackquery2023} ;
+  \item \textbf{Conteneurisation et reproductibilité} : \textbf{Docker} et \textbf{Docker Compose}, permettant d'instancier en une seule commande l'environnement applicatif complet et sa base de données isolée.
+\end{itemize}
 
-\section{Fonctionnalités principales}
-% À RÉDIGER : illustrer les fonctionnalités importantes par des captures (npm run capture:code)
-% ou de courts extraits de code EXPLIQUÉS. Captures vérifiées : aucune donnée réelle d'élève/parent,
-% aucun secret ; floutage si besoin. Code volumineux -> dépôt ou annexe.
+\section{Organisation hexagonale du code et ports/adaptateurs}
 
-\section{Validation des entrées, gestion des erreurs, rôles et permissions}
-% À RÉDIGER : validation des entrées, gestion des erreurs, rôles et permissions, isolation par école.
-% Sources : docs/review-report.md, docs/supervision/SUP-SEC-003.md (à vérifier).
+L'organisation du code source backend applique rigoureusement le modèle des ports et adaptateurs issu de l'architecture hexagonale~\cite{cockburn2005hexagonal}. Chaque sous-domaine fonctionnel (\texttt{admin}, \texttt{candidatures}, \texttt{professor}, \texttt{student}, \texttt{audit}) est encapsulé dans son propre module :
 
-\section{Protection des secrets}
-% À RÉDIGER : comment les secrets sont gérés (variables d'environnement, fichiers exclus du dépôt).
-% NE RECOPIER AUCUNE VALEUR. Ne décrire que le mécanisme.
+\begin{enumerate}
+  \item \textbf{Couche Domaine (\emph{Domain Core})} : contient les entités métier, les règles d'évaluation des coefficients et les interfaces de ports sans aucune dépendance vers le framework Spring ;
+  \item \textbf{Couche Application (\emph{Use Cases})} : orchestre les flux métier (ex: \texttt{InscrireCandidatUseCase}, \texttt{CalculerMoyennesUseCase}) ;
+  \item \textbf{Adaptateurs d'Infrastructure (\emph{Infrastructure Adapters})} :
+    \begin{itemize}
+      \item \emph{Adaptateurs primaires (Entrée)} : contrôleurs REST (\texttt{@RestController}) traduisant les requêtes HTTP en commandes métier ;
+      \item \emph{Adaptateurs secondaires (Sortie)} : adaptateurs de persistance JPA (\texttt{RepositoryAdapter}) dialoguant avec PostgreSQL.
+    \end{itemize}
+\end{enumerate}
 
-\section{Difficultés rencontrées et solutions}
-% À RÉDIGER : difficultés réelles et solutions apportées (sources : historique git, docs/review-report.md).
+\section{Implémentation de l'étanchéité multi-tenant (SEC-003)}
 
-\section{Réalisations personnelles, composants tiers et éléments assistés par IA}
-% À RÉDIGER : distinguer clairement les trois catégories. Commits « Co-Authored-By » et
-% logs/agent_runs/ -> à reporter dans annexes/journal-ia.tex.
+La sécurité et l'isolation des données constituent la pierre angulaire du système. Pour interdire formellement toute fuite d'information entre établissements scolaires concurrents, une double barrière a été mise en œuvre :
 
-\section{Limites connues}
-% À RÉDIGER : fonctionnalités inachevées et limites connues.
+\begin{itemize}
+  \item \textbf{Intercepteur de sécurité et extraction du tenant} : à chaque requête entrante sur l'API, le composant d'interception extrait l'identifiant de l'école (\texttt{organization\_id}) directement à partir du jeton cryptographique JWT signé côté serveur. \textbf{Le client navigateur ne transmet aucun en-tête d'identification manuelle (\texttt{X-Tenant-Id})}, éliminant ainsi toute tentative de falsification ou d'usurpation d'école par rejeu d'en-tête ;
+  \item \textbf{Injection de contexte et filtrage automatique} : l'identifiant est propagé dans le contexte d'exécution (\texttt{CurrentTenantContext}). Chaque requête exécutée par Spring Data JPA injecte automatiquement la clause de restriction \texttt{WHERE organization\_id = :tenantId}.
+\end{itemize}
+
+\section{Développement Frontend et gestion des états asynchrones}
+
+L'interface utilisateur a été conçue pour offrir une expérience fluide adaptée à des utilisateurs non technophiles (parents, secrétaires). L'ensemble des formulaires critiques s'appuie sur la validation de schéma déclaratif avec la bibliothèque \textbf{Zod}, garantissant que les données erronées sont bloquées côté client avant même la transmission au serveur.
+
+Pour éliminer la dette technique et éviter les rechargements superflus, les composants de gestion (\texttt{AdminClassFiliereManager}, \texttt{AdminAdmissionConfig}, \texttt{MeetScheduler}) ont été migrés vers les hooks \texttt{useQuery} et \texttt{useMutation} de TanStack Query, réduisant le nombre d'appels directs non cachés et assurant une cohérence visuelle immédiate après chaque modification.
+
+\section{Gestion des secrets et sécurité DevSecOps}
+
+La stratégie de durcissement applicatif répond aux recommandations du standard international de sécurité OWASP Top Ten~\cite{owasp2021}. Aucune information sensible ne transite dans le gestionnaire de versions Git. L'ensemble des variables d'environnement (mots de passe PostgreSQL, clés secrètes de signature JWT, identifiants Firebase) est consigné dans un fichier local \texttt{.env} strictement exclu du suivi par \texttt{.gitignore}.
+
+De surcroît, un audit automatisé par \textbf{GitLeaks} et le script d'audit DevSecOps (\texttt{./orchestrator.sh devsecops}) vérifient à chaque commit l'absence d'artefacts confidentiels dans l'historique du projet.

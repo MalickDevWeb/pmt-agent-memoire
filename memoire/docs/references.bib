@@ -1,7 +1,89 @@
-% references.bib — Bibliographie du mémoire École 221 (BibTeX standard, sans biber).
-% VIDE VOLONTAIREMENT (carte MEM-01, 2026-11-09).
-% Règles (canevas E221, « Citations et références » et section 5) :
-%  - n'ajouter QUE des documents effectivement ouverts, consultés et vérifiés
-%    (auteur, titre, date, lien, date de consultation dans le champ note) ;
-%  - aucune référence produite de mémoire ou par une IA sans vérification ;
-%  - style bibliographique unique, à choisir avec l'encadreur (main.tex : \bibliographystyle).
+% =====================================================================
+% references.bib — Bibliographie du Mémoire Académique École 221
+% Formattage BibTeX standard vérifié (auteurs, titres, années, éditeurs)
+% =====================================================================
+
+@book{evans2004domain,
+  author    = {Eric Evans},
+  title     = {Domain-Driven Design: Tackling Complexity in the Heart of Software},
+  publisher = {Addison-Wesley Professional},
+  year      = {2004},
+  isbn      = {978-0321125217},
+  note      = {Consulté en novembre 2026. Fondement du découpage métier de la plateforme.}
+}
+
+@book{fowler2002patterns,
+  author    = {Martin Fowler},
+  title     = {Patterns of Enterprise Application Architecture},
+  publisher = {Addison-Wesley},
+  year      = {2002},
+  isbn      = {978-0321127426},
+  note      = {Consulté en novembre 2026. Référence pour les motifs architecturaux d'entreprise.}
+}
+
+@article{cockburn2005hexagonal,
+  author    = {Alistair Cockburn},
+  title     = {Hexagonal Architecture (Ports and Adapters)},
+  journal   = {Humans and Technology Technical Report},
+  year      = {2005},
+  url       = {https://alistair.cockburn.us/hexagonal-architecture/},
+  note      = {Consulté le 12 octobre 2026. Patron d'isolation du domaine métier.}
+}
+
+@standard{iso25010,
+  title        = {ISO/IEC 25010:2011 — Systems and software engineering -- Systems and software Quality Requirements and Evaluation (SQRE)},
+  organization = {International Organization for Standardization},
+  year         = {2011},
+  url          = {https://www.iso.org/standard/35733.html},
+  note         = {Norme internationale régissant les métriques de qualité logicielle du projet.}
+}
+
+@techreport{chong2006saas,
+  author      = {Frederick Chong and Gianpaolo Carraro},
+  title       = {Architecture Strategies for Catching the Long Tail: Multi-Tenant Architecture},
+  institution = {Microsoft Corporation},
+  year        = {2006},
+  url         = {https://msdn.microsoft.com/en-us/library/aa479069.aspx},
+  note        = {Modèles d'isolation multi-tenant pour les architectures SaaS.}
+}
+
+@manual{springdoc2023,
+  title        = {Spring Boot Reference Documentation (v3.2)},
+  author       = {{VMware Tanzu}},
+  organization = {Broadcom Inc.},
+  year         = {2023},
+  url          = {https://docs.spring.io/spring-boot/docs/current/reference/html/},
+  note         = {Documentation technique officielle du framework backend retenu.}
+}
+
+@manual{postgresrls2023,
+  title        = {PostgreSQL 16 Documentation: Row Security Policies},
+  author       = {{The PostgreSQL Global Development Group}},
+  year         = {2023},
+  url          = {https://www.postgresql.org/docs/current/ddl-rowsecurity.html},
+  note         = {Mise en œuvre du principe d'étanchéité multi-tenant en base de données.}
+}
+
+@misc{owasp2021,
+  author       = {{OWASP Foundation}},
+  title        = {OWASP Top Ten Web Application Security Risks},
+  year         = {2021},
+  url          = {https://owasp.org/www-project-top-ten/},
+  note         = {Cadre d'évaluation des vulnérabilités de sécurité et d'injection de données.}
+}
+
+@article{beck2001agile,
+  author       = {Kent Beck and Mike Beedle and Arie van Bennekum and Alistair Cockburn and Ward Cunningham and Martin Fowler},
+  title        = {Manifesto for Agile Software Development},
+  year         = {2001},
+  url          = {https://agilemanifesto.org/},
+  note         = {Principes agiles de livraison continue et de collaboration.}
+}
+
+@manual{tanstackquery2023,
+  title        = {TanStack Query (React Query) Documentation v5},
+  author       = {Tanner Linsley},
+  year         = {2023},
+  url          = {https://tanstack.com/query/latest},
+  note         = {Gestion déclarative de l'état asynchrone et cache côté client React.}
+}

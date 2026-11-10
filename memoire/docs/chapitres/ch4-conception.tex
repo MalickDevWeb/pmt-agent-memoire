@@ -2,7 +2,7 @@
 
 \section{Introduction}
 
-La conception de la plateforme École~221 a été pensée pour répondre à une double contrainte : d'une part, la diversité des besoins fonctionnels inhérents à la vie scolaire (pédagogie, planification, comptabilité, sécurité physique des campus) ; d'autre part, les impératifs stricts de sécurité liés à une architecture mutualisée (\emph{multi-tenant}), où plusieurs établissements partagent une même infrastructure logicielle tout en exigeant une confidentialité absolue de leurs données respectives.
+La conception de la plateforme École~221 répond à une double contrainte d'ingénierie. D'une part, elle prend en compte la diversité des processus de la vie scolaire (pédagogie, planification, comptabilité, sécurité physique des campus). D'autre part, elle satisfait aux impératifs stricts d'une architecture mutualisée (\emph{multi-tenant}), où plusieurs établissements partagent une même infrastructure logicielle tout en exigeant une étanchéité absolue de leurs données respectives~\cite{chong2006saas}.
 
 \section{Conception fonctionnelle}
 
@@ -32,7 +32,7 @@ Les règles métier documentées dans \nolinkurl{docs/requirements.md} garantiss
 
 \subsection{Découpage modulaire en Architecture Hexagonale}
 
-Afin d'isoler la logique métier des contraintes techniques et des frameworks externes, le backend Spring Boot adopte le paradigme de l'\emph{Architecture Hexagonale} (Ports et Adaptateurs), tel qu'illustré par la structure du code :
+Afin d'isoler la logique métier des contraintes techniques et des frameworks externes, le backend Spring Boot adopte le paradigme de l'\emph{Architecture Hexagonale} (Ports et Adaptateurs)~\cite{cockburn2005hexagonal}. Cette conception s'appuie sur les principes fondamentaux du \emph{Domain-Driven Design} (DDD) formalisés par Evans~\cite{evans2004domain} ainsi que sur les patrons d'architecture d'entreprise de Fowler~\cite{fowler2002patterns} :
 \begin{itemize}
     \item \textbf{Noyau de Domaine (\texttt{domain})} : contient les entités pures, les objets valeurs (\emph{Value Objects}) et les règles métier, sans aucune dépendance vers Spring ou la base de données.
     \item \textbf{Ports (\texttt{ports/in} et \texttt{ports/out})} : interfaces définissant les contrats des cas d'utilisation (\emph{Use Cases}) et les opérations d'accès aux ressources externes (dépôts de données, passerelles de messagerie).
