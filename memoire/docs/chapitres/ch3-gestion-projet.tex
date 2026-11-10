@@ -38,34 +38,13 @@ Le projet associe des acteurs humains et des profils d'agents spécialisés :
     \item \textbf{Agents 08 à 11} : assurent respectivement la modélisation économique, la rédaction technique, la gestion des releases et la modélisation UML/C4.
 \end{itemize}
 
-La figure~\ref{fig:schema-agents} illustre la topologie de collaboration et de supervision stricte reliant les agents, le bus asynchrone et l'arbitrage humain.
+La figure~\ref{fig:schema-agents} illustre la topologie de collaboration et de supervision stricte reliant les agents, le bus asynchrone et l'arbitrage souverain du Tech Lead.
 
 \begin{figure}[htbp]
-\centering
-\small
-\begin{verbatim}
-               +---------------------------------------+
-               |        TECH LEAD HUMAIN (Arbitre)     |
-               +-------------------+-------------------+
-                                   | (Visa Gate 5)
-                                   v
-               +---------------------------------------+
-               |      Agent 00 : Kasongo (Superviseur) |
-               +-------------------+-------------------+
-                                   | (Contrôle mécanique)
-                                   v
-  +-----------------------------------------------------------------+
-  |               BUS ASYNCHRONE (agent_messages.md)                |
-  +--------+------------------+------------------+------------------+
-           |                  |                  |                  |
-           v                  v                  v                  v
-     [Conception]       [Réalisation]       [Qualification]     [Livraison]
-    01. Analyste       03. Backend         05. QA (16 suites)  08. Chiffrage
-    02. Architecte     04. Frontend        07. DevSecOps       09. Mémoire
-    11. Modélisation                       06. Code Reviewer   10. Release
-\end{verbatim}
-\caption{Architecture de gouvernance du pipeline multi-agents supervisé}
-\label{fig:schema-agents}
+  \centering
+  \includegraphics[width=0.98\textwidth]{images/schema-agents.png}
+  \caption{Topologie d'interaction et de gouvernance du pipeline multi-agents supervisé}
+  \label{fig:schema-agents}
 \end{figure}
 
 Le guide exhaustif de portabilité et de réutilisation de ce framework pour d'autres projets logiciels est documenté dans \nolinkurl{docs/guides/framework_agentic_coding.md}.
